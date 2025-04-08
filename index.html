@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube VIBE Index Analyzer</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      color: #ffa500;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #1e1e1e;
+      margin: 0 5px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .tab.active {
+      background-color: #ffa500;
+      color: #000;
+    }
+    .input-area {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .input-area input {
+      padding: 10px;
+      margin: 5px;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+    }
+    .input-area button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #ffa500;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .result-card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(255, 165, 0, 0.2);
+      width: 100%;
+    }
+    .error {
+      text-align: center;
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube VIBE Index Analyzer</h1>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('single')">단일 채널 분석</div>
+      <div class="tab" onclick="switchTab('compare')">여러 채널 비교</div>
+    </div>
+    <div id="single" class="tab-content">
+      <div class="input-area">
+        <input type="text" id="singleChannelUrl" placeholder="유튜브 채널 URL 입력" />
+        <button id="singleAnalyzeBtn">분석하기</button>
+        <div id="singleResult"></div>
+      </div>
+    </div>
+    <div id="compare" class="tab-content" style="display: none;">
+      <div class="input-area">
+        <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+        <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+        <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+        <button id="compareAnalyzeBtn">비교하기</button>
+        <div id="compareResult"></div>
+      </div>
+    </div>
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+      document.getElementById(tabName).style.display = 'block';
+      document.querySelectorAll('.tab').forEach(tab => {
+        if (tab.textContent.includes(tabName === 'single' ? '단일' : '여러')) {
+          tab.classList.add('active');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('singleAnalyzeBtn').addEventListener('click', function () {
+        document.getElementById('singleResult').innerHTML = '<div class="result-card">[단일 분석 결과 표시 예정]</div>';
+        document.getElementById('errorMsg').textContent = '';
+      });
+
+      document.getElementById('compareAnalyzeBtn').addEventListener('click', function () {
+        document.getElementById('compareResult').innerHTML = '<div class="result-card">[채널 1 결과]</div><div class="result-card">[채널 2 결과]</div>';
+        document.getElementById('errorMsg').textContent = '';
+      });
+    });
+  </script>
+</body>
+</html>
