@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube VIBE Index Analyzer</title>
+  <style>
+    body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .container { padding: 20px; max-width: 1200px; margin: auto; }
+    h1 { font-size: 2rem; text-align: center; color: #ffa500; }
+    .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+    .tab { padding: 10px 20px; cursor: pointer; background-color: #1e1e1e; margin: 0 5px; border-radius: 8px; }
+    .tab.active { background-color: #ffa500; color: #000; }
+    .input-area { text-align: center; margin-bottom: 20px; }
+    .input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
+    .input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
+    .result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); }
+    .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .channel-info img { width: 80px; height: 80px; border-radius: 50%; }
+    .metric { font-weight: bold; margin: 10px 0; }
+    .metric span.label { color: #ffff00; }
+    .metric span.value { color: #ffa500; font-size: 1.2rem; }
+    .sub-details { margin-left: 20px; margin-top: 5px; font-size: 0.9rem; }
+    #compareResult { display: flex; gap: 20px; flex-wrap: wrap; }
+    .error { color: red; text-align: center; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube VIBE Index Analyzer</h1>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('single')">단일 채널 분석</div>
+      <div class="tab" onclick="switchTab('compare')">여러 채널 비교</div>
+    </div>
+
+    <div id="single" class="tab-content">
+      <div class="input-area">
+        <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+        <button onclick="analyzeSingleChannel()">분석하기</button>
+      </div>
+      <div id="singleResult"></div>
+    </div>
+
+    <div id="compare" class="tab-content" style="display: none;">
+      <div class="input-area">
+        <input type="text" id="channelUrl1" placeholder="채널 URL 입력" />
+        <input type="text" id="channelUrl2" placeholder="채널 URL 입력" />
+        <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+        <button onclick="compareChannels()">비교하기</button>
+      </div>
+      <div id="compareResult"></div>
+    </div>
+    <div class="error" id="errorMsg"></div>
+  </div>
+</body>
+</html>
