@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +17,9 @@
     .result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); width: 360px; flex-shrink: 0; }
     .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
     .channel-info img { width: 80px; height: 80px; border-radius: 50%; }
+    .channel-details { font-size: 0.9rem; line-height: 1.4; }
+    .channel-details ul { padding-left: 20px; margin: 5px 0 0 0; }
+    .channel-details li { list-style-type: disc; margin: 3px 0; }
     .metric { font-weight: bold; margin: 10px 0; }
     .metric span.label { color: #ffff00; }
     .metric span.value { color: #ffa500; font-size: 1.2rem; }
@@ -108,7 +110,7 @@
       const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
       const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
       const V = 1 - (std / avg);
-      const U = (stats.length / 60) * 100;
+      const U = (stats.length >= 60) ? 100 : (stats.length / 60) * 100;
       const VIBE = E * 0.5 + V * 100 * 0.3 + U * 0.2;
 
       return {
@@ -121,6 +123,8 @@
         likes: sum(likes).toLocaleString(),
         comments: sum(comments).toLocaleString(),
         views: sum(views).toLocaleString(),
+        avgViews: Math.round(avg).toLocaleString(),
+        stdViews: Math.round(std).toLocaleString(),
         E: E.toFixed(1),
         V: V.toFixed(2),
         U: U.toFixed(1),
@@ -135,11 +139,14 @@
         <div class="result-card">
           <div class="channel-info">
             <img src="${d.thumbnail}" />
-            <div>
+            <div class="channel-details">
               <div><strong>${d.name}</strong></div>
-              <div>구독자 수: ${d.subs}</div>
-              <div>채널 개설일: ${d.created}</div>
-              <div>총 업로드: ${d.uploadsTotal} / 전체 조회수: ${d.totalViews}</div>
+              <ul>
+                <li>구독자 수: ${d.subs}</li>
+                <li>채널 개설일: ${d.created}</li>
+                <li>총 업로드: ${d.uploadsTotal}</li>
+                <li>전체 조회수: ${d.totalViews}</li>
+              </ul>
               <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${d.VIBE}</span></div>
             </div>
           </div>
@@ -147,7 +154,7 @@
             <div class="sub-details">- 좋아요: ${d.likes}<br/>- 댓글 수: ${d.comments}<br/>- 조회수: ${d.views}</div>
           </div>
           <div class="metric"><span class="label">V (viewership consistency):</span> <span class="value">${d.V}</span>
-            <div class="sub-details">- 평균 조회수 기반 안정성<br/>- 표준편차 기반 분산도 계산</div>
+            <div class="sub-details">- 평균 조회수: ${d.avgViews}<br/>- 표준편차: ${d.stdViews}</div>
           </div>
           <div class="metric"><span class="label">U (upload frequency):</span> <span class="value">${d.U}%</span>
             <div class="sub-details">- 최근 60일 업로드 수: ${d.videoCount60days}개</div>
@@ -163,7 +170,7 @@
             ${videos.map(v => `
               <tr>
                 <td><a href="https://www.youtube.com/watch?v=${v.id}" target="_blank">${v.snippet.title}</a></td>
-                <td>${v.snippet.publishedAt.split('T')[0]}</td>
+                <td>${v.snippet.publishedAt.slice(2,10)}</td>
                 <td>${(+v.statistics.viewCount || 0).toLocaleString()}</td>
                 <td>${(+v.statistics.likeCount || 0).toLocaleString()}</td>
                 <td>${(+v.statistics.commentCount || 0).toLocaleString()}</td>
