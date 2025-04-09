@@ -1,216 +1,220 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>YouTube VIBE Index Analyzer</title>
-<style>
-body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-.container { padding: 20px; max-width: 1200px; margin: auto; }
-h1 { font-size: 2rem; text-align: center; color: #ffa500; }
-.tabs { display: flex; justify-content: center; margin-bottom: 20px; }
-.tab { padding: 10px 20px; cursor: pointer; background-color: #1e1e1e; margin: 0 5px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
-.tab.active { background-color: #ffa500; color: #000; }
-.input-area { text-align: center; margin-bottom: 20px; }
-.input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
-.input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
-.result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); width: 360px; flex-shrink: 0; }
-.channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-.channel-info img { width: 80px; height: 80px; border-radius: 50%; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube VIBE Index Analyzer</title>
+  <style>
+    body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .container { padding: 20px; max-width: 1200px; margin: auto; }
+    h1 { font-size: 2rem; text-align: center; color: #ffa500; }
+    .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+    .tab { padding: 10px 20px; cursor: pointer; background-color: #1e1e1e; margin: 0 5px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
+    .tab.active { background-color: #ffa500; color: #000; }
+    .input-area { text-align: center; margin-bottom: 20px; }
+    .input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
+    .input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
+    .mode-selector { text-align: center; margin-bottom: 10px; font-size: 0.85rem; }
+    .mode-selector label { margin: 0 10px; font-weight: bold; font-size: 0.85rem; }
+    .result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); width: 360px; flex-shrink: 0; }
+    .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .channel-info img { width: 80px; height: 80px; border-radius: 50%; }
     .channel-details { font-size: 0.9rem; line-height: 1.4; }
     .channel-details ul { padding-left: 20px; margin: 5px 0 0 0; }
     .channel-details li { list-style-type: disc; margin: 3px 0; }
-.metric { font-weight: bold; margin: 10px 0; }
-.metric span.label { color: #ffff00; }
-.metric span.value { color: #ffa500; font-size: 1.2rem; }
-.sub-details { margin-left: 20px; margin-top: 5px; font-size: 0.9rem; }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
-th, td { padding: 6px; border: 1px solid #333; text-align: center; }
-th { background-color: #333; color: #ffa500; }
-.error { color: red; text-align: center; margin-top: 10px; }
-#compareResult { display: flex; flex-wrap: nowrap; gap: 20px; overflow-x: auto; }
-</style>
+    .metric { font-weight: bold; margin: 10px 0; }
+    .metric span.label { color: #ffff00; }
+    .metric span.value { color: #ffa500; font-size: 1.6rem; }
+    .sub-details { margin-left: 20px; margin-top: 5px; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+    th, td { padding: 6px; border: 1px solid #333; text-align: center; }
+    th { background-color: #333; color: #ffa500; }
+    .error { color: red; text-align: center; margin-top: 10px; }
+    #compareResult { display: flex; flex-wrap: nowrap; gap: 20px; overflow-x: auto; }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>YouTube VIBE Index Analyzer</h1>
-<div class="tabs">
-<div class="tab active" onclick="switchTab('single')">Single Channel</div>
-<div class="tab" onclick="switchTab('compare')">Multi Channel</div>
-</div>
-<div id="single" class="tab-content">
-<div class="input-area">
-<input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
-<button onclick="analyzeSingleChannel()">Analysis</button>
-</div>
-<div id="singleResult"></div>
-<div id="videoTable"></div>
-</div>
-<div id="compare" class="tab-content" style="display: none;">
-<div class="input-area">
-<input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-<input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-<input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-<button onclick="compareChannels()">Compare</button>
-</div>
-<div id="compareResult"></div>
-</div>
-<div class="error" id="errorMsg"></div>
-</div>
+  <div class="container">
+    <h1>YouTube VIBE Index Analyzer</h1>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('single')">Single Channel</div>
+      <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
+    </div>
+    <div id="single" class="tab-content">
+      <div class="input-area">
+        <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+        <button onclick="analyzeSingleChannel()">Analysis</button>
+      </div>
+      <div class="mode-selector">
+        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+      </div>
+      <div id="singleResult"></div>
+      <div id="videoTable"></div>
+    </div>
+    <div id="compare" class="tab-content" style="display: none;">
+      <div class="input-area">
+        <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+        <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+        <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+        <button onclick="compareChannels()">Compare</button>
+      </div>
+      <div id="compareResult"></div>
+    </div>
+    <div class="error" id="errorMsg"></div>
+  </div>
 <script>
 const API_KEY = "AIzaSyBnzGv5joUq8cFftHTyGeTJECTLQzYxNf8";
 
 function switchTab(tabName) {
-document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-document.getElementById(tabName).style.display = 'block';
-document.querySelectorAll('.tab').forEach(tab => {
-if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) tab.classList.add('active');
-});
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+  document.getElementById(tabName).style.display = 'block';
+  document.querySelectorAll('.tab').forEach(tab => {
+    if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) tab.classList.add('active');
+  });
 }
 
 function showError(msg) {
-document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorMsg').textContent = msg;
 }
 
 function extractChannelId(url) {
-const match = url.match(/(?:channel\/|\?id=|@)([\w-]+)/);
-return match ? match[1] : null;
+  const match = url.match(/(?:channel\/|\?id=|@)([\w-]+)/);
+  return match ? match[1] : null;
+}
+
+function getModeWeights() {
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  return mode === 'trendy' ? { e: 0.6, v: 0.3, u: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
 }
 
 async function fetchChannelData(channelId) {
-const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
-const chData = await chRes.json();
-const ch = chData.items[0];
+  const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
+  const chData = await chRes.json();
+  const ch = chData.items[0];
 
-let nextPageToken = "";
-let allVideos = [];
-const now = new Date();
-do {
-const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
-const json = await res.json();
-allVideos.push(...json.items);
-nextPageToken = json.nextPageToken || "";
-} while (nextPageToken && allVideos.length < 150);
+  let nextPageToken = "";
+  let allVideos = [];
+  do {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
+    const json = await res.json();
+    allVideos.push(...json.items);
+    nextPageToken = json.nextPageToken || "";
+  } while (nextPageToken && allVideos.length < 150);
 
-const videoIds = allVideos.map(v => v.id.videoId).filter(Boolean);
-const stats = [];
-for (let i = 0; i < videoIds.length; i += 50) {
-const batch = videoIds.slice(i, i + 50).join(",");
-const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY}`);
-const json = await res.json();
-stats.push(...json.items);
-}
+  const videoIds = allVideos.map(v => v.id.videoId).filter(Boolean);
+  const stats = [];
+  for (let i = 0; i < videoIds.length; i += 50) {
+    const batch = videoIds.slice(i, i + 50).join(",");
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY}`);
+    const json = await res.json();
+    stats.push(...json.items);
+  }
 
-const views = stats.map(v => +v.statistics.viewCount || 0);
-const likes = stats.map(v => +v.statistics.likeCount || 0);
-const comments = stats.map(v => +v.statistics.commentCount || 0);
-const sum = arr => arr.reduce((a,b)=>a+b,0);
-const avg = views.length ? sum(views) / views.length : 0;
-const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
-const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
-const V = 1 - (std / avg);
-      const U = (stats.length / 60) * 100;
-      const U = (stats.length >= 60) ? 100 : (stats.length / 60) * 100;
-const VIBE = E * 0.5 + V * 100 * 0.3 + U * 0.2;
+  const views = stats.map(v => +v.statistics.viewCount || 0);
+  const likes = stats.map(v => +v.statistics.likeCount || 0);
+  const comments = stats.map(v => +v.statistics.commentCount || 0);
+  const sum = arr => arr.reduce((a,b)=>a+b,0);
+  const avg = views.length ? sum(views) / views.length : 0;
+  const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
+  const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
+  const V = 1 - (std / avg);
+  const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
 
-return {
-name: ch.snippet.title,
-thumbnail: ch.snippet.thumbnails.default.url,
-subs: Number(ch.statistics.subscriberCount).toLocaleString() + '명',
-created: ch.snippet.publishedAt.split('T')[0],
-uploadsTotal: Number(ch.statistics.videoCount).toLocaleString() + '개',
-totalViews: Number(ch.statistics.viewCount).toLocaleString(),
-likes: sum(likes).toLocaleString(),
-comments: sum(comments).toLocaleString(),
-views: sum(views).toLocaleString(),
-        avgViews: Math.round(avg).toLocaleString(),
-        stdViews: Math.round(std).toLocaleString(),
-E: E.toFixed(1),
-V: V.toFixed(2),
-U: U.toFixed(1),
-VIBE: VIBE.toFixed(1),
-videos: stats,
-videoCount60days: stats.length
-};
+  const w = getModeWeights();
+  const VIBE = E * w.e + V * 100 * w.v + U * w.u;
+
+  return {
+    name: ch.snippet.title,
+    thumbnail: ch.snippet.thumbnails.default.url,
+    subs: Number(ch.statistics.subscriberCount).toLocaleString() + '명',
+    created: ch.snippet.publishedAt.split('T')[0],
+    uploadsTotal: Number(ch.statistics.videoCount).toLocaleString() + '개',
+    totalViews: Number(ch.statistics.viewCount).toLocaleString(),
+    likes: sum(likes).toLocaleString(),
+    comments: sum(comments).toLocaleString(),
+    views: sum(views).toLocaleString(),
+    avgViews: Math.round(avg).toLocaleString(),
+    stdViews: Math.round(std).toLocaleString(),
+    E: E.toFixed(1),
+    V: V.toFixed(2),
+    U: U.toFixed(1),
+    VIBE: VIBE.toFixed(1),
+    videos: stats,
+    videoCount60days: stats.length
+  };
 }
 
 function renderCard(d) {
-return `
-       <div class="result-card">
-         <div class="channel-info">
-           <img src="${d.thumbnail}" />
-            <div>
-            <div class="channel-details">
-             <div><strong>${d.name}</strong></div>
-              <div>구독자 수: ${d.subs}</div>
-              <div>채널 개설일: ${d.created}</div>
-              <div>총 업로드: ${d.uploadsTotal} / 전체 조회수: ${d.totalViews}</div>
-              <ul>
-                <li>구독자 수: ${d.subs}</li>
-                <li>채널 개설일: ${d.created}</li>
-                <li>총 업로드: ${d.uploadsTotal}</li>
-                <li>전체 조회수: ${d.totalViews}</li>
-              </ul>
-             <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${d.VIBE}</span></div>
-           </div>
-         </div>
-         <div class="metric"><span class="label">E (engagement rate):</span> <span class="value">${d.E}%</span>
-           <div class="sub-details">- 좋아요: ${d.likes}<br/>- 댓글 수: ${d.comments}<br/>- 조회수: ${d.views}</div>
-         </div>
-         <div class="metric"><span class="label">V (viewership consistency):</span> <span class="value">${d.V}</span>
-            <div class="sub-details">- 평균 조회수 기반 안정성<br/>- 표준편차 기반 분산도 계산</div>
-            <div class="sub-details">- 평균 조회수: ${d.avgViews}<br/>- 표준편차: ${d.stdViews}</div>
-         </div>
-         <div class="metric"><span class="label">U (upload frequency):</span> <span class="value">${d.U}%</span>
-           <div class="sub-details">- 최근 60일 업로드 수: ${d.videoCount60days}개</div>
-         </div>
-       </div>`;
+  return `
+    <div class="result-card">
+      <div class="channel-info">
+        <img src="${d.thumbnail}" />
+        <div class="channel-details">
+          <div style="font-size: 1.2rem; font-weight: bold;">${d.name}</div>
+          <ul>
+            <li>구독자 수: ${d.subs}</li>
+            <li>채널 개설일: ${d.created}</li>
+            <li>총 업로드: ${d.uploadsTotal}</li>
+            <li>전체 조회수: ${d.totalViews}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${d.VIBE}</span></div>
+      <div class="metric" style="font-size: 1rem"><span class="label">E (engagement rate):</span> <span class="value">${d.E}%</span>
+        <div class="sub-details">- 좋아요: ${d.likes}<br/>- 댓글 수: ${d.comments}<br/>- 조회수: ${d.views}</div>
+      </div>
+      <div class="metric" style="font-size: 1rem"><span class="label">V (viewership consistency):</span> <span class="value">${d.V}</span>
+        <div class="sub-details">- 평균 조회수: ${d.avgViews}<br/>- 표준편차: ${d.stdViews}</div>
+      </div>
+      <div class="metric" style="font-size: 1rem"><span class="label">U (upload frequency):</span> <span class="value">${d.U}%</span>
+        <div class="sub-details">- 최근 60일 업로드 수: ${d.videoCount60days}개</div>
+      </div>
+    </div>`;
 }
 
 function renderVideoTable(videos) {
-return `
-       <table>
-         <thead><tr><th>제목</th><th>날짜</th><th>조회수</th><th>좋아요</th><th>댓글</th></tr></thead>
-         <tbody>
-           ${videos.map(v => `
-             <tr>
-               <td><a href="https://www.youtube.com/watch?v=${v.id}" target="_blank">${v.snippet.title}</a></td>
-                <td>${v.snippet.publishedAt.split('T')[0]}</td>
-                <td>${v.snippet.publishedAt.slice(2,10)}</td>
-               <td>${(+v.statistics.viewCount || 0).toLocaleString()}</td>
-               <td>${(+v.statistics.likeCount || 0).toLocaleString()}</td>
-               <td>${(+v.statistics.commentCount || 0).toLocaleString()}</td>
-             </tr>
-           `).join('')}
-         </tbody>
-       </table>`;
+  return `
+    <table>
+      <thead><tr><th>제목</th><th>날짜</th><th>조회수</th><th>좋아요</th><th>댓글</th></tr></thead>
+      <tbody>
+        ${videos.map(v => `
+          <tr>
+            <td><a href="https://www.youtube.com/watch?v=${v.id}" target="_blank">${v.snippet.title}</a></td>
+            <td>${v.snippet.publishedAt.slice(2,10)}</td>
+            <td>${(+v.statistics.viewCount || 0).toLocaleString()}</td>
+            <td>${(+v.statistics.likeCount || 0).toLocaleString()}</td>
+            <td>${(+v.statistics.commentCount || 0).toLocaleString()}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
 }
 
 async function analyzeSingleChannel() {
-const url = document.getElementById('singleChannelUrl').value;
-const id = extractChannelId(url);
-if (!id) return showError('채널 ID를 찾을 수 없습니다.');
-const d = await fetchChannelData(id);
-document.getElementById('singleResult').innerHTML = renderCard(d);
-document.getElementById('videoTable').innerHTML = renderVideoTable(d.videos);
+  const url = document.getElementById('singleChannelUrl').value;
+  const id = extractChannelId(url);
+  if (!id) return showError('채널 ID를 찾을 수 없습니다.');
+  const d = await fetchChannelData(id);
+  document.getElementById('singleResult').innerHTML = renderCard(d);
+  document.getElementById('videoTable').innerHTML = renderVideoTable(d.videos);
 }
 
 async function compareChannels() {
-const urls = [
-document.getElementById('channelUrl1').value,
-document.getElementById('channelUrl2').value,
-document.getElementById('channelUrl3').value
-].filter(Boolean);
-const result = document.getElementById('compareResult');
-result.innerHTML = '';
-for (const url of urls) {
-const id = extractChannelId(url);
-if (!id) continue;
-const d = await fetchChannelData(id);
-if (d) result.innerHTML += renderCard(d);
-}
+  const urls = [
+    document.getElementById('channelUrl1').value,
+    document.getElementById('channelUrl2').value,
+    document.getElementById('channelUrl3').value
+  ].filter(Boolean);
+  const result = document.getElementById('compareResult');
+  result.innerHTML = '';
+  for (const url of urls) {
+    const id = extractChannelId(url);
+    if (!id) continue;
+    const d = await fetchChannelData(id);
+    if (d) result.innerHTML += renderCard(d);
+  }
 }
 </script>
 </body>
