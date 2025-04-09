@@ -1,81 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>YouTube VIBE Index Analyzer</title>
-  <style>
-    body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    .container { padding: 20px; max-width: 1200px; margin: auto; }
-    h1 { font-size: 2rem; text-align: center; color: #ffa500; }
-    .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
-    .tab { padding: 10px 20px; cursor: pointer; background-color: #1e1e1e; margin: 0 5px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
-    .tab.active { background-color: #ffa500; color: #000; }
-    .input-area { text-align: center; margin-bottom: 10px; }
-    .input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
-    .input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
-    .mode-selector { text-align: center; margin-bottom: 20px; }
-    .mode-selector label { margin: 0 10px; font-weight: bold; font-size: 0.85rem; color: #fff; }
-    .mode-selector input { margin-right: 5px; }
-
-    .result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); width: 360px; flex-shrink: 0; }
-    .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-    .channel-info img { width: 80px; height: 80px; border-radius: 50%; }
-    .channel-details { font-size: 0.9rem; line-height: 1.4; }
-    .channel-details ul { padding-left: 20px; margin: 5px 0 0 0; }
-    .channel-details li { list-style-type: disc; margin: 3px 0; }
-
-    .metric { font-weight: bold; margin: 10px 0; }
-    .metric span.label { color: #ffff00; }
-    .metric span.value { color: #ffa500; font-size: 1.6rem; }
-    .sub-details { margin-left: 20px; margin-top: 5px; font-size: 0.9rem; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
-    th, td { padding: 6px; border: 1px solid #333; text-align: center; }
-    th { background-color: #333; color: #ffa500; }
-
-    .error { color: red; text-align: center; margin-top: 10px; }
-    #compareResult { display: flex; flex-wrap: nowrap; gap: 20px; overflow-x: auto; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YouTube VIBE Index Analyzer</title>
+<style>
+body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+.container { padding: 20px; max-width: 1200px; margin: auto; }
+h1 { font-size: 2rem; text-align: center; color: #ffa500; }
+.tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+.tab { padding: 10px 20px; cursor: pointer; background-color: #1e1e1e; margin: 0 5px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
+.tab.active { background-color: #ffa500; color: #000; }
+.input-area { text-align: center; margin-bottom: 20px; }
+.input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
+.input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
+.mode-selector { text-align: center; margin-bottom: 10px; font-size: 0.85rem; }
+.mode-selector label { margin: 0 10px; font-weight: bold; font-size: 0.85rem; }
+.result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); width: 360px; flex-shrink: 0; }
+.channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.channel-info img { width: 80px; height: 80px; border-radius: 50%; }
+.channel-details { font-size: 0.9rem; line-height: 1.4; }
+.channel-details ul { padding-left: 20px; margin: 5px 0 0 0; }
+.channel-details li { list-style-type: disc; margin: 3px 0; }
+.metric { font-weight: bold; margin: 10px 0; }
+.metric span.label { color: #ffff00; }
+.metric span.value { color: #ffa500; font-size: 1.6rem; }
+.sub-details { margin-left: 20px; margin-top: 5px; font-size: 0.9rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+th, td { padding: 6px; border: 1px solid #333; text-align: center; }
+th { background-color: #333; color: #ffa500; }
+.error { color: red; text-align: center; margin-top: 10px; }
+#compareResult { display: flex; flex-wrap: nowrap; gap: 20px; overflow-x: auto; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>YouTube VIBE Index Analyzer</h1>
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('single')">Single Channel</div>
-      <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
-    </div>
-
-    <div id="single" class="tab-content">
-      <div class="input-area">
-        <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
-        <button onclick="analyzeSingleChannel()">Analysis</button>
-      </div>
-      <div class="mode-selector">
-        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
-      </div>
-      <div id="singleResult"></div>
-      <div id="videoTable"></div>
-    </div>
-
-    <div id="compare" class="tab-content" style="display: none;">
-      <div class="input-area">
-        <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-        <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-        <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-        <button onclick="compareChannels()">Compare</button>
-      </div>
-      <div class="mode-selector">
-        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
-      </div>
-      <div id="compareResult"></div>
-    </div>
-
-    <div class="error" id="errorMsg"></div>
-  </div>
-
+<div class="container">
+<h1>YouTube VIBE Index Analyzer</h1>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('single')">Single Channel</div>
+<div class="tab" onclick="switchTab('compare')">Multi Channel</div>
+</div>
+<div id="single" class="tab-content">
+<div class="input-area">
+<input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+<button onclick="analyzeSingleChannel()">Analysis</button>
+</div>
+<div class="mode-selector">
+<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+</div>
+<div id="singleResult"></div>
+<div id="videoTable"></div>
+</div>
+<div id="compare" class="tab-content" style="display: none;">
+<div class="input-area">
+<input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+<input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+<input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+<button onclick="compareChannels()">Compare</button>
+</div>
+<div class="mode-selector">
+<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+</div>
+<div id="compareResult"></div>
+</div>
+<div class="error" id="errorMsg"></div>
+</div>
 <script>
 const API_KEY = "AIzaSyBnzGv5joUq8cFftHTyGeTJECTLQzYxNf8";
 
@@ -228,6 +219,11 @@ async function compareChannels() {
     if (d) result.innerHTML += renderCard(d);
   }
 }
+
+// Steady VIBE 기본 선택 표시 (시각적으로도)
+window.onload = function () {
+  document.querySelector('input[name="mode"][value="steady"]').checked = true;
+};
 </script>
 </body>
 </html>
