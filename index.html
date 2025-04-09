@@ -14,23 +14,23 @@
     .input-area { text-align: center; margin-bottom: 20px; }
     .input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
     .input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
-    .mode-select { text-align: center; margin-bottom: 20px; }
     .result-card { background-color: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(255,165,0,0.2); width: 360px; flex-shrink: 0; }
     .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
     .channel-info img { width: 80px; height: 80px; border-radius: 50%; }
     .channel-details { font-size: 0.9rem; line-height: 1.4; }
     .channel-details ul { padding-left: 20px; margin: 5px 0 0 0; }
     .channel-details li { list-style-type: disc; margin: 3px 0; }
-    .channel-details strong { font-size: 1.2rem; }
-    .metric { font-weight: bold; margin: 10px 0; }
+    .metric { font-weight: bold; margin: 10px 0; font-size: 1rem; }
     .metric span.label { color: #ffff00; }
-    .metric span.value { color: #ffa500; font-size: 1.4rem; }
+    .metric span.value { color: #ffa500; font-size: 1.6rem; }
     .sub-details { margin-left: 20px; margin-top: 5px; font-size: 0.9rem; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
     th, td { padding: 6px; border: 1px solid #333; text-align: center; }
     th { background-color: #333; color: #ffa500; }
     .error { color: red; text-align: center; margin-top: 10px; }
     #compareResult { display: flex; flex-wrap: nowrap; gap: 20px; overflow-x: auto; }
+    .mode-selector { text-align: center; margin: 20px 0; }
+    .mode-selector label { font-size: 0.8rem; font-weight: bold; margin: 0 10px; }
   </style>
 </head>
 <body>
@@ -40,9 +40,9 @@
       <div class="tab active" onclick="switchTab('single')">Single Channel</div>
       <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
     </div>
-    <div class="mode-select">
+    <div class="mode-selector">
       <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-      <label style="margin-left: 20px;"><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+      <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
     </div>
     <div id="single" class="tab-content">
       <div class="input-area">
@@ -86,8 +86,8 @@
 
     function getModeWeights() {
       const mode = document.querySelector('input[name="mode"]:checked').value;
-      if (mode === 'trendy') return { e: 0.6, v: 0.3, u: 0.1 };
-      return { e: 0.5, v: 0.4, u: 0.1 };
+      if (mode === "trendy") return { E: 0.6, V: 0.3, U: 0.1 };
+      return { E: 0.5, V: 0.4, U: 0.1 };
     }
 
     async function fetchChannelData(channelId) {
@@ -97,6 +97,7 @@
 
       let nextPageToken = "";
       let allVideos = [];
+      const now = new Date();
       do {
         const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
         const json = await res.json();
@@ -119,11 +120,11 @@
       const sum = arr => arr.reduce((a,b)=>a+b,0);
       const avg = views.length ? sum(views) / views.length : 0;
       const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
+      const weights = getModeWeights();
       const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
       const V = 1 - (std / avg);
       const U = (stats.length >= 60) ? 100 : (stats.length / 60) * 100;
-      const weights = getModeWeights();
-      const VIBE = E * weights.e + V * 100 * weights.v + U * weights.u;
+      const VIBE = E * weights.E + V * 100 * weights.V + U * weights.U;
 
       return {
         name: ch.snippet.title,
@@ -152,17 +153,17 @@
           <div class="channel-info">
             <img src="${d.thumbnail}" />
             <div class="channel-details">
-              <div><strong style="font-size: 1.3rem;">${d.name}</strong></div>
+              <div style="font-size: 1.2rem;"><strong>${d.name}</strong></div>
               <ul>
                 <li>구독자 수: ${d.subs}</li>
                 <li>채널 개설일: ${d.created}</li>
                 <li>총 업로드: ${d.uploadsTotal}</li>
                 <li>전체 조회수: ${d.totalViews}</li>
               </ul>
-              <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${d.VIBE}</span></div>
+              <div class="metric" style="font-size: 1.8rem;"><span class="label">VIBE Index:</span> <span class="value">${d.VIBE}</span></div>
             </div>
           </div>
-          <div class="metric"><span class="label">E (engagement rate):</span> <span class="value">${d.E}%</span>
+          <div class="metric" style="font-size: 1rem;"><span class="label">E (engagement rate):</span> <span class="value" style="font-size: 1.2rem;">${d.E}%</span>
             <div class="sub-details">- 좋아요: ${d.likes}<br/>- 댓글 수: ${d.comments}<br/>- 조회수: ${d.views}</div>
           </div>
           <div class="metric"><span class="label">V (viewership consistency):</span> <span class="value">${d.V}</span>
