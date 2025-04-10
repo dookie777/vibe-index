@@ -148,27 +148,7 @@ function showError(msg) {
 
 
 // 4.10추가 시작
-function extractChannelId(url) {
-  let channelId = null;
-  // 기존 URL 패턴 처리
-  const channelIdRegex = /\/channel\/([a-zA-Z0-9_-]+)/;
-  const userRegex = /\/user\/([a-zA-Z0-9_-]+)/;
-  // 신규 채널 핸들(@) 패턴 처리
-  const handleRegex = /\/@([a-zA-Z0-9_-]+)/;
-  
-  if (channelIdRegex.test(url)) {
-    channelId = url.match(channelIdRegex)[1];
-  } else if (userRegex.test(url)) {
-    channelId = url.match(userRegex)[1];
-  } else if (handleRegex.test(url)) {
-    // 채널 핸들을 추출
-    const handle = url.match(handleRegex)[1];
-    // *주의*: 이 상태의 handle은 채널 ID가 아니므로,
-    // 이후 YouTube API를 호출하여 해당 handle에 해당하는 채널 ID로 변환해야 합니다.
-    channelId = convertHandleToChannelId(handle);  //
-  }
-  return channelId;
-}
+
 
 // @handle → channel ID 변환
 async function convertHandleToChannelId(handle, apiKey) {
@@ -210,6 +190,28 @@ async function convertUsernameToChannelId(username, apiKey) {
     console.error("API 요청 실패:", error);
     return null;
   }
+}
+
+function extractChannelId(url) {
+  let channelId = null;
+  // 기존 URL 패턴 처리
+  const channelIdRegex = /\/channel\/([a-zA-Z0-9_-]+)/;
+  const userRegex = /\/user\/([a-zA-Z0-9_-]+)/;
+  // 신규 채널 핸들(@) 패턴 처리
+  const handleRegex = /\/@([a-zA-Z0-9_-]+)/;
+  
+  if (channelIdRegex.test(url)) {
+    channelId = url.match(channelIdRegex)[1];
+  } else if (userRegex.test(url)) {
+    channelId = url.match(userRegex)[1];
+  } else if (handleRegex.test(url)) {
+    // 채널 핸들을 추출
+    const handle = url.match(handleRegex)[1];
+    // *주의*: 이 상태의 handle은 채널 ID가 아니므로,
+    // 이후 YouTube API를 호출하여 해당 handle에 해당하는 채널 ID로 변환해야 합니다.
+    channelId = convertHandleToChannelId(handle);  //
+  }
+  return channelId;
 }
 
 // 4.10 추가분 끝
