@@ -356,18 +356,21 @@ async function compareChannels() {
   const inputP2 = document.getElementById('pValue2').value;
   const inputP3 = document.getElementById('pValue3').value;
 
-  const Ps = [inputP1, inputP2, inputP3].map(p => p ? parseFloat(p) : null);
+const Ps = [inputP1, inputP2, inputP3].map(p => p ? parseFloat(p) : null);
 
-  let idx = 0;
-  for (const url of urls) {
-    const id = extractChannelId(url);
-    if (!id) continue;
-    const d = await fetchChannelData(id);
-    if (d) {
-      result.innerHTML += renderCard(d, Ps[idx]);
-      idx++;
-    }
+let idx = 0;
+for (const url of urls) {
+  const id = await extractChannelId(url);  // <-- ✅ await 추가됨
+  if (!id) {
+    showError(`채널 ID를 찾을 수 없습니다: ${url}`);  // <-- 🚩 에러 처리 추가
+    continue;
   }
+  const d = await fetchChannelData(id);
+  if (d) {
+    result.innerHTML += renderCard(d, Ps[idx]);
+    idx++;
+  }
+}
 }
 
 // Steady VIBE 기본 선택 표시 (시각적으로도)
