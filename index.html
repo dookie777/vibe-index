@@ -77,51 +77,49 @@ th { background-color: #333; color: #ffa500; }
 </style>
 </head>
 <body>
-<div class="container">
-<h1>YouTube VIBE Index Analyzer</h1>
-<div class="tabs">
-<div class="tab active" onclick="switchTab('single')">Single Channel</div>
-<div class="tab" onclick="switchTab('compare')">Multi Channel</div>
-</div>
-<div id="single" class="tab-content">
-<div class="input-area">
-  <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
-  <input type="text" id="singlePValue" placeholder="P값(긍정 댓글 비율 %) (선택)">
-  <button onclick="analyzeSingleChannel()">Analysis</button>
-</div>
-<div class="mode-selector">
-<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
-</div>
-<div id="singleResult"></div>
-<div id="videoTable"></div>
-</div>
-<div id="compare" class="tab-content" style="display: none;">
-<div class="input-area">
-  <div class="multi-input-container">
-    <div class="multi-input">
-      <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-      <input type="text" id="pValue1" placeholder="채널 1 P값 (선택)" />
+  <div class="container">
+    <h1>YouTube VIBE Index Analyzer</h1>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('single')">Single Channel</div>
+      <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
     </div>
-    <div class="multi-input">
-      <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-      <input type="text" id="pValue2" placeholder="채널 2 P값 (선택)" />
+
+    <div id="single" class="tab-content">
+      <div class="input-area">
+        <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+        <button onclick="analyzeSingleChannel()">Analysis</button>
+      </div>
+
+      <div class="mode-selector">
+        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+      </div>
+
+      <div id="singleResult"></div>
+      <div id="videoTable"></div>
     </div>
-    <div class="multi-input">
-      <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-      <input type="text" id="pValue3" placeholder="채널 3 P값 (선택)" />
+
+    <div id="compare" class="tab-content" style="display: none;">
+      <div class="input-area">
+        <div class="multi-input-container">
+          <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+          <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+          <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+          <button onclick="compareChannels()">Compare</button>
+        </div>
+      </div>
+
+      <div class="mode-selector">
+        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+      </div>
+
+      <div id="compareResult"></div>
     </div>
+
+    <div class="error" id="errorMsg"></div>
   </div>
-  <button onclick="compareChannels()">Compare</button>
-</div>
-<div class="mode-selector">
-<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
-</div>
-<div id="compareResult"></div>
-</div>
-<div class="error" id="errorMsg"></div>
-</div>
 <script>
 
 const API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
@@ -275,7 +273,7 @@ async function fetchChannelData(channelId) {
   };
 }
 
-function renderCard(d, P, commentCount) {
+function renderCard(d, P, commentCount, analyzedVideoCount) {
   const finalVibe = calculateVIBE(d.E, d.V, d.U, P);
   const equation = generateEquation(d.E, d.V, d.U, P);
 
@@ -284,7 +282,7 @@ function renderCard(d, P, commentCount) {
       <div class="channel-info">
         <img src="${d.thumbnail}" />
         <div class="channel-details">
-          <div style="font-size: 1.2rem;"><strong>${d.name}</strong></div>
+          <strong>${d.name}</strong>
           <ul>
             <li>구독자 수: ${d.subs}</li>
             <li>채널 개설일: ${d.created}</li>
@@ -300,7 +298,7 @@ function renderCard(d, P, commentCount) {
       </div>
       <div class="equation">${equation}</div>
 
-      <div class="metric" style="font-size: 1rem">
+      <div class="metric">
         <span class="label">E (engagement rate):</span> 
         <span class="value">${d.E}%</span>
         <div class="sub-details">
@@ -310,7 +308,7 @@ function renderCard(d, P, commentCount) {
         </div>
       </div>
 
-      <div class="metric" style="font-size: 1rem">
+      <div class="metric">
         <span class="label">V (viewership consistency):</span> 
         <span class="value">${d.V}</span>
         <div class="sub-details">
@@ -319,7 +317,7 @@ function renderCard(d, P, commentCount) {
         </div>
       </div>
 
-      <div class="metric" style="font-size: 1rem">
+      <div class="metric">
         <span class="label">U (upload frequency):</span> 
         <span class="value">${d.U}%</span>
         <div class="sub-details">
@@ -328,11 +326,12 @@ function renderCard(d, P, commentCount) {
       </div>
 
       ${P ? `
-        <div class="metric" style="font-size: 1rem">
+        <div class="metric">
           <span class="label">P (Positive Comment Rate):</span> 
           <span class="value">${P}%</span>
           <div class="sub-details">
-            - 분석 대상 댓글 수: ${commentCount}개
+            - 분석 대상 댓글 수: ${commentCount}개<br/>
+            - 분석 대상 영상 수: ${analyzedVideoCount}개
           </div>
         </div>` : ''}
     </div>`;
@@ -365,8 +364,11 @@ async function analyzeSingleChannel() {
 
   let P = null;
   let commentCount = 0;
+  let analyzedVideoCount = 0;
 
   const recentVideos = await fetchRecentVideos(id);
+  analyzedVideoCount = recentVideos.length;
+
   let comments = [];
   for (let videoId of recentVideos) {
     if (comments.length >= 100) break;
@@ -378,7 +380,7 @@ async function analyzeSingleChannel() {
     P = await analyzeSentiment(comments);
   }
 
-  document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount);
+  document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount, analyzedVideoCount);
   document.getElementById('videoTable').innerHTML = renderVideoTable(d.videos);
 }
 
@@ -392,8 +394,6 @@ async function compareChannels() {
   const result = document.getElementById('compareResult');
   result.innerHTML = '';
 
-  let idx = 0;
-
   for (const url of urls) {
     const id = await extractChannelId(url);
     if (!id) {
@@ -403,13 +403,14 @@ async function compareChannels() {
 
     const d = await fetchChannelData(id);
 
-    // 댓글 분석 추가 시작
     let P = null;
     let commentCount = 0;
+    let analyzedVideoCount = 0;
 
     const recentVideos = await fetchRecentVideos(id);
-    let comments = [];
+    analyzedVideoCount = recentVideos.length;
 
+    let comments = [];
     for (let videoId of recentVideos) {
       if (comments.length >= 100) break;
       comments = await fetchComments(videoId, comments, 100 - comments.length);
@@ -419,10 +420,8 @@ async function compareChannels() {
     if (commentCount > 0) {
       P = await analyzeSentiment(comments);
     }
-    // 댓글 분석 추가 끝
 
-    result.innerHTML += renderCard(d, P, commentCount);
-    idx++;
+    result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
   }
 }
 
