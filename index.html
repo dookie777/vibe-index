@@ -143,6 +143,8 @@ function showError(msg) {
 //  return match ? match[1] : null;
 // } 
 
+
+// 4.10추가 시작
 function extractChannelId(url) {
   let channelId = null;
   // 기존 URL 패턴 처리
@@ -160,10 +162,55 @@ function extractChannelId(url) {
     const handle = url.match(handleRegex)[1];
     // *주의*: 이 상태의 handle은 채널 ID가 아니므로,
     // 이후 YouTube API를 호출하여 해당 handle에 해당하는 채널 ID로 변환해야 합니다.
-    channelId = convertHandleToChannelId(handle);  // 추가 구현 필요
+    channelId = convertHandleToChannelId(handle);  //
   }
   return channelId;
 }
+
+// @handle → channel ID 변환
+async function convertHandleToChannelId(handle, apiKey) {
+  const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(
+    "@" + handle
+  )}&key=${apiKey}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      return data.items[0].snippet.channelId;
+    } else {
+      console.error("Handle에 해당하는 채널을 찾을 수 없습니다.");
+      return null;
+    }
+  } catch (error) {
+    console.error("API 요청 실패:", error);
+    return null;
+  }
+}
+
+// /user/username → channel ID 변환
+async function convertUsernameToChannelId(username, apiKey) {
+  const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=${username}&key=${apiKey}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      return data.items[0].id;
+    } else {
+      console.error("Username에 해당하는 채널을 찾을 수 없습니다.");
+      return null;
+    }
+  } catch (error) {
+    console.error("API 요청 실패:", error);
+    return null;
+  }
+}
+
+// 4.10 추가분 끝
+
 
 function getModeWeights() {
   const mode = document.querySelector('input[name="mode"]:checked').value;
