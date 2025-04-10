@@ -163,8 +163,7 @@ async function convertHandleToChannelId(handle, apiKey) {
     if (data.items && data.items.length > 0) {
       return data.items[0].id.channelId;
     } else {
-      if (!data.items || data.items.length === 0) {
-      showError("채널을 찾을 수 없습니다.");
+      
       console.error("Handle에 해당하는 채널을 찾을 수 없습니다.");
       return null;
     }
