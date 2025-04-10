@@ -42,8 +42,9 @@ th { background-color: #333; color: #ffa500; }
 </div>
 <div id="single" class="tab-content">
 <div class="input-area">
-<input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
-<button onclick="analyzeSingleChannel()">Analysis</button>
+  <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+  <input type="text" id="singlePValue" placeholder="P값(긍정 댓글 비율 %) (선택)">
+  <button onclick="analyzeSingleChannel()">Analysis</button>
 </div>
 <div class="mode-selector">
 <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
@@ -54,10 +55,17 @@ th { background-color: #333; color: #ffa500; }
 </div>
 <div id="compare" class="tab-content" style="display: none;">
 <div class="input-area">
-<input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-<input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-<input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-<button onclick="compareChannels()">Compare</button>
+<div class="input-area">
+  <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+  <input type="text" id="pValue1" placeholder="채널 1 P값 (선택)">
+  
+  <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+  <input type="text" id="pValue2" placeholder="채널 2 P값 (선택)">
+
+  <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+  <input type="text" id="pValue3" placeholder="채널 3 P값 (선택)">
+  
+  <button onclick="compareChannels()">Compare</button>
 </div>
 <div class="mode-selector">
 <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
@@ -149,7 +157,10 @@ async function fetchChannelData(channelId) {
   };
 }
 
-function renderCard(d) {
+function renderCard(d, P) {
+  const finalVibe = calculateVIBE(d.E, d.V, d.U, P);
+  const equation = generateEquation(d.E, d.V, d.U, P);
+
   return `
     <div class="result-card">
       <div class="channel-info">
@@ -164,13 +175,18 @@ function renderCard(d) {
           </ul>
         </div>
       </div>
-      <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${d.VIBE}</span></div>
+
+      <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${finalVibe}</span></div>
+      <div class="equation">${equation}</div>
+
       <div class="metric" style="font-size: 1rem"><span class="label">E (engagement rate):</span> <span class="value">${d.E}%</span>
         <div class="sub-details">- 좋아요: ${d.likes}<br/>- 댓글 수: ${d.comments}<br/>- 조회수: ${d.views}</div>
       </div>
+
       <div class="metric" style="font-size: 1rem"><span class="label">V (viewership consistency):</span> <span class="value">${d.V}</span>
         <div class="sub-details">- 평균 조회수: ${d.avgViews}<br/>- 표준편차: ${d.stdViews}</div>
       </div>
+
       <div class="metric" style="font-size: 1rem"><span class="label">U (upload frequency):</span> <span class="value">${d.U}%</span>
         <div class="sub-details">- 최근 60일 업로드 수: ${d.videoCount60days}개</div>
       </div>
@@ -200,7 +216,11 @@ async function analyzeSingleChannel() {
   const id = extractChannelId(url);
   if (!id) return showError('채널 ID를 찾을 수 없습니다.');
   const d = await fetchChannelData(id);
-  document.getElementById('singleResult').innerHTML = renderCard(d);
+// P값 입력값을 가져오는 코드 추가
+const inputP = document.getElementById('singlePValue').value;
+const P = inputP ? parseFloat(inputP) : null;
+
+document.getElementById('singleResult').innerHTML = renderCard(d, P);
   document.getElementById('videoTable').innerHTML = renderVideoTable(d.videos);
 }
 
@@ -210,13 +230,25 @@ async function compareChannels() {
     document.getElementById('channelUrl2').value,
     document.getElementById('channelUrl3').value
   ].filter(Boolean);
+
   const result = document.getElementById('compareResult');
   result.innerHTML = '';
+
+  const inputP1 = document.getElementById('pValue1').value;
+  const inputP2 = document.getElementById('pValue2').value;
+  const inputP3 = document.getElementById('pValue3').value;
+
+  const Ps = [inputP1, inputP2, inputP3].map(p => p ? parseFloat(p) : null);
+
+  let idx = 0;
   for (const url of urls) {
     const id = extractChannelId(url);
     if (!id) continue;
     const d = await fetchChannelData(id);
-    if (d) result.innerHTML += renderCard(d);
+    if (d) {
+      result.innerHTML += renderCard(d, Ps[idx]);
+      idx++;
+    }
   }
 }
 
@@ -224,6 +256,36 @@ async function compareChannels() {
 window.onload = function () {
   document.querySelector('input[name="mode"][value="steady"]').checked = true;
 };
+
+//
+  function calculateVIBE(E, V, U, P) {
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  
+  let weights;
+  if (mode === 'steady') {
+    weights = P ? { e: 0.45, v: 0.35, u: 0.1, p: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
+  } else {
+    weights = P ? { e: 0.55, v: 0.25, u: 0.1, p: 0.1 } : { e: 0.6, v: 0.3, u: 0.1 };
+  }
+
+  let vibeIndex;
+  if (P) {
+    vibeIndex = (E * weights.e) + (V * 100 * weights.v) + (U * weights.u) + (P * weights.p);
+  } else {
+    vibeIndex = (E * weights.e) + (V * 100 * weights.v) + (U * weights.u);
+  }
+
+  return vibeIndex.toFixed(1);
+}
+
+function generateEquation(E, V, U, P) {
+  if (P) {
+    return `= E(${E}%) + V(${V}) + U(${U}%) + P(${P}%)`;
+  } else {
+    return `= E(${E}%) + V(${V}) + U(${U}%)`;
+  }
+}
+//
 </script>
 </body>
 </html>
