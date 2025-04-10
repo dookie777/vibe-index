@@ -124,8 +124,8 @@ th { background-color: #333; color: #ffa500; }
 </div>
 <script>
 
-const API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";
-const url = "https://www.youtube.com/@exampleHandle";
+const API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
+const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
 function switchTab(tabName) {
@@ -473,7 +473,7 @@ async function fetchComments(videoId, collectedComments, maxComments) {
   return collectedComments.concat(data.items.map(item => item.snippet.topLevelComment.snippet.textOriginal));
 }
 
-const NLP_API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";  // NLP용 API키 입력
+const NLP_API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";  // NLP용 API키 입력
 
 async function analyzeSentiment(comments) {
   const doc = comments.join(". ");
