@@ -46,6 +46,34 @@ th { background-color: #333; color: #ffa500; }
 .metric, .equation, .sub-details {
   text-align: left;
 }
+.multi-input-container { 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.multi-input {
+  display: flex;
+  gap: 10px;
+}
+
+.multi-input input {
+  width: 300px;
+}
+
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.mode-selector input[type="radio"] {
+  margin-right: 5px;
+}
 </style>
 </head>
 <body>
@@ -70,16 +98,20 @@ th { background-color: #333; color: #ffa500; }
 </div>
 <div id="compare" class="tab-content" style="display: none;">
 <div class="input-area">
-<div class="input-area">
-  <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-  <input type="text" id="pValue1" placeholder="채널 1 P값 (선택)">
-  
-  <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-  <input type="text" id="pValue2" placeholder="채널 2 P값 (선택)">
-
-  <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-  <input type="text" id="pValue3" placeholder="채널 3 P값 (선택)">
-  
+  <div class="multi-input-container">
+    <div class="multi-input">
+      <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+      <input type="text" id="pValue1" placeholder="채널 1 P값 (선택)" />
+    </div>
+    <div class="multi-input">
+      <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+      <input type="text" id="pValue2" placeholder="채널 2 P값 (선택)" />
+    </div>
+    <div class="multi-input">
+      <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+      <input type="text" id="pValue3" placeholder="채널 3 P값 (선택)" />
+    </div>
+  </div>
   <button onclick="compareChannels()">Compare</button>
 </div>
 <div class="mode-selector">
