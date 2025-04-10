@@ -366,7 +366,7 @@ async function analyzeSingleChannel() {
   let commentCount = 0;
   let analyzedVideoCount = 0;
 
-  const recentVideos = await fetchRecentVideos(id);
+const recentVideos = await fetchRecentVideos(id, 50);
   analyzedVideoCount = recentVideos.length;
 
   let comments = [];
@@ -407,7 +407,7 @@ async function compareChannels() {
     let commentCount = 0;
     let analyzedVideoCount = 0;
 
-    const recentVideos = await fetchRecentVideos(id);
+const recentVideos = await fetchRecentVideos(id, 50);
     analyzedVideoCount = recentVideos.length;
 
     let comments = [];
@@ -460,10 +460,17 @@ function generateEquation(E, V, U, P) {
 }
 
 // 🚩 추가될 3가지 함수들
-async function fetchRecentVideos(channelId) {
-  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=20`);
-  const data = await res.json();
-  return data.items.map(item => item.id.videoId);
+async function fetchRecentVideos(channelId, maxVideos = 50) {
+  let videos = [];
+  let nextPageToken = "";
+  do {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=${Math.min(50, maxVideos - videos.length)}&pageToken=${nextPageToken}`);
+    const data = await res.json();
+    videos.push(...data.items.map(item => item.id.videoId));
+    nextPageToken = data.nextPageToken || "";
+  } while (nextPageToken && videos.length < maxVideos);
+
+  return videos;
 }
 
 async function fetchComments(videoId, collectedComments, maxComments) {
