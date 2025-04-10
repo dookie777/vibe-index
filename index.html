@@ -123,8 +123,10 @@ th { background-color: #333; color: #ffa500; }
 <div class="error" id="errorMsg"></div>
 </div>
 <script>
+
 const API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";
 const url = "https://www.youtube.com/@exampleHandle";
+const value = data?.[0]?.property;
 
 function switchTab(tabName) {
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
