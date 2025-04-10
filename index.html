@@ -275,7 +275,7 @@ async function fetchChannelData(channelId) {
   };
 }
 
-function renderCard(d, P) {
+function renderCard(d, P, commentCount) {
   const finalVibe = calculateVIBE(d.E, d.V, d.U, P);
   const equation = generateEquation(d.E, d.V, d.U, P);
 
@@ -294,20 +294,47 @@ function renderCard(d, P) {
         </div>
       </div>
 
-      <div class="metric"><span class="label">VIBE Index:</span> <span class="value">${finalVibe}</span></div>
+      <div class="metric">
+        <span class="label">VIBE Index:</span> 
+        <span class="value">${finalVibe}</span>
+      </div>
       <div class="equation">${equation}</div>
 
-      <div class="metric" style="font-size: 1rem"><span class="label">E (engagement rate):</span> <span class="value">${d.E}%</span>
-        <div class="sub-details">- 좋아요: ${d.likes}<br/>- 댓글 수: ${d.comments}<br/>- 조회수: ${d.views}</div>
+      <div class="metric" style="font-size: 1rem">
+        <span class="label">E (engagement rate):</span> 
+        <span class="value">${d.E}%</span>
+        <div class="sub-details">
+          - 좋아요: ${d.likes}<br/>
+          - 댓글 수: ${d.comments}<br/>
+          - 조회수: ${d.views}
+        </div>
       </div>
 
-      <div class="metric" style="font-size: 1rem"><span class="label">V (viewership consistency):</span> <span class="value">${d.V}</span>
-        <div class="sub-details">- 평균 조회수: ${d.avgViews}<br/>- 표준편차: ${d.stdViews}</div>
+      <div class="metric" style="font-size: 1rem">
+        <span class="label">V (viewership consistency):</span> 
+        <span class="value">${d.V}</span>
+        <div class="sub-details">
+          - 평균 조회수: ${d.avgViews}<br/>
+          - 표준편차: ${d.stdViews}
+        </div>
       </div>
 
-      <div class="metric" style="font-size: 1rem"><span class="label">U (upload frequency):</span> <span class="value">${d.U}%</span>
-        <div class="sub-details">- 최근 60일 업로드 수: ${d.videoCount60days}개</div>
+      <div class="metric" style="font-size: 1rem">
+        <span class="label">U (upload frequency):</span> 
+        <span class="value">${d.U}%</span>
+        <div class="sub-details">
+          - 최근 60일 업로드 수: ${d.videoCount60days}개
+        </div>
       </div>
+
+      ${P ? `
+        <div class="metric" style="font-size: 1rem">
+          <span class="label">P (Positive Comment Rate):</span> 
+          <span class="value">${P}%</span>
+          <div class="sub-details">
+            - 분석 대상 댓글 수: ${commentCount}개
+          </div>
+        </div>` : ''}
     </div>`;
 }
 
@@ -333,12 +360,25 @@ async function analyzeSingleChannel() {
   const url = document.getElementById('singleChannelUrl').value;
   const id = await extractChannelId(url);
   if (!id) return showError('채널 ID를 찾을 수 없습니다.');
-  const d = await fetchChannelData(id);
-// P값 입력값을 가져오는 코드 추가
-const inputP = document.getElementById('singlePValue').value;
-const P = inputP ? parseFloat(inputP) : null;
 
-document.getElementById('singleResult').innerHTML = renderCard(d, P);
+  const d = await fetchChannelData(id);
+
+  let P = null;
+  let commentCount = 0;
+
+  const recentVideos = await fetchRecentVideos(id);
+  let comments = [];
+  for (let videoId of recentVideos) {
+    if (comments.length >= 100) break;
+    comments = await fetchComments(videoId, comments, 100 - comments.length);
+  }
+  commentCount = comments.length;
+
+  if (commentCount > 0) {
+    P = await analyzeSentiment(comments);
+  }
+
+  document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount);
   document.getElementById('videoTable').innerHTML = renderVideoTable(d.videos);
 }
 
@@ -352,25 +392,38 @@ async function compareChannels() {
   const result = document.getElementById('compareResult');
   result.innerHTML = '';
 
-  const inputP1 = document.getElementById('pValue1').value;
-  const inputP2 = document.getElementById('pValue2').value;
-  const inputP3 = document.getElementById('pValue3').value;
+  let idx = 0;
 
-const Ps = [inputP1, inputP2, inputP3].map(p => p ? parseFloat(p) : null);
+  for (const url of urls) {
+    const id = await extractChannelId(url);
+    if (!id) {
+      showError(`채널 ID를 찾을 수 없습니다: ${url}`);
+      continue;
+    }
 
-let idx = 0;
-for (const url of urls) {
-  const id = await extractChannelId(url);  // <-- ✅ await 추가됨
-  if (!id) {
-    showError(`채널 ID를 찾을 수 없습니다: ${url}`);  // <-- 🚩 에러 처리 추가
-    continue;
-  }
-  const d = await fetchChannelData(id);
-  if (d) {
-    result.innerHTML += renderCard(d, Ps[idx]);
+    const d = await fetchChannelData(id);
+
+    // 댓글 분석 추가 시작
+    let P = null;
+    let commentCount = 0;
+
+    const recentVideos = await fetchRecentVideos(id);
+    let comments = [];
+
+    for (let videoId of recentVideos) {
+      if (comments.length >= 100) break;
+      comments = await fetchComments(videoId, comments, 100 - comments.length);
+    }
+    commentCount = comments.length;
+
+    if (commentCount > 0) {
+      P = await analyzeSentiment(comments);
+    }
+    // 댓글 분석 추가 끝
+
+    result.innerHTML += renderCard(d, P, commentCount);
     idx++;
   }
-}
 }
 
 // Steady VIBE 기본 선택 표시 (시각적으로도)
@@ -406,7 +459,34 @@ function generateEquation(E, V, U, P) {
     return `= E(${E}%) + V(${V}) + U(${U}%)`;
   }
 }
-//
+
+// 🚩 추가될 3가지 함수들
+async function fetchRecentVideos(channelId) {
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=20`);
+  const data = await res.json();
+  return data.items.map(item => item.id.videoId);
+}
+
+async function fetchComments(videoId, collectedComments, maxComments) {
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY}`);
+  const data = await res.json();
+  return collectedComments.concat(data.items.map(item => item.snippet.topLevelComment.snippet.textOriginal));
+}
+
+const NLP_API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";  // NLP용 API키 입력
+
+async function analyzeSentiment(comments) {
+  const doc = comments.join(". ");
+  const res = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${NLP_API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ document: { type: "PLAIN_TEXT", content: doc }, encodingType: "UTF8" })
+  });
+  const sentimentData = await res.json();
+  const positiveComments = sentimentData.sentences.filter(s => s.sentiment.score >= 0).length;
+  return ((positiveComments / sentimentData.sentences.length) * 100).toFixed(1);
+}
+  
 </script>
 </body>
 </html>
