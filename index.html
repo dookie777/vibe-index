@@ -367,14 +367,20 @@ async function analyzeSingleChannel() {
   let analyzedVideoCount = 0;
 
 const recentVideos = await fetchRecentVideos(id, 50);
-  analyzedVideoCount = recentVideos.length;
 
-  let comments = [];
-  for (let videoId of recentVideos) {
-    if (comments.length >= 100) break;
-    comments = await fetchComments(videoId, comments, 100 - comments.length);
+let comments = [];
+analyzedVideoCount = 0;
+for (let videoId of recentVideos) {
+  if (comments.length >= 100) break;
+  
+  const prevCommentCount = comments.length;
+  comments = await fetchComments(videoId, comments, 100 - comments.length);
+
+  if (comments.length > prevCommentCount) {
+    analyzedVideoCount++;
   }
-  commentCount = comments.length;
+}
+commentCount = comments.length;
 
   if (commentCount > 0) {
     P = await analyzeSentiment(comments);
@@ -408,14 +414,20 @@ async function compareChannels() {
     let analyzedVideoCount = 0;
 
 const recentVideos = await fetchRecentVideos(id, 50);
-    analyzedVideoCount = recentVideos.length;
 
-    let comments = [];
-    for (let videoId of recentVideos) {
-      if (comments.length >= 100) break;
-      comments = await fetchComments(videoId, comments, 100 - comments.length);
-    }
-    commentCount = comments.length;
+let comments = [];
+analyzedVideoCount = 0;  // 반드시 0으로 초기화
+for (let videoId of recentVideos) {
+  if (comments.length >= 100) break;
+  
+  const prevCommentCount = comments.length;  // 댓글 수 저장 (새로 추가!)
+  comments = await fetchComments(videoId, comments, 100 - comments.length);
+
+  if (comments.length > prevCommentCount) {  // 댓글이 추가되면 분석 영상 수 증가 (새로 추가!)
+    analyzedVideoCount++;
+  }
+}
+commentCount = comments.length;
 
     if (commentCount > 0) {
       P = await analyzeSentiment(comments);
