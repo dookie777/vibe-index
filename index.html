@@ -120,6 +120,56 @@ th { background-color: #333; color: #ffa500; }
 
     <div class="error" id="errorMsg"></div>
   </div>
+  <div style="text-align:center; padding: 20px; margin-top:30px;">
+  <button onclick="toggleVibeInfo()" style="padding:8px 20px; background-color:#1e1e1e; border:none; color:#ffa500; border-radius:8px; cursor:pointer;">
+    About VIBE INDEX
+  </button>
+
+  <div id="vibeInfo" style="display:none; margin-top:20px; background-color:#1e1e1e; padding:20px; border-radius:12px; text-align:left;">
+    <h2 style="color: #ffa500; text-align:center;">YouTube VIBE INDEX 소개</h2>
+
+    <h3 style="color: #ffa500;">1. VIBE INDEX 개요 및 산식</h3>
+    <p>VIBE INDEX는 유튜브 채널의 콘텐츠 성과와 시청자 반응을 객관적이고 효율적으로 평가하기 위한 종합 지표입니다.</p>
+    <p><strong>산식:</strong><br>
+      VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가중치U) + (P × 가중치P)</p>
+    <ul>
+      <li><strong>Steady 가중치:</strong> E:40%, V:40%, U:7.5%, P:12.5%</li>
+      <li><strong>Trendy 가중치:</strong> E:50%, V:30%, U:7.5%, P:12.5%</li>
+    </ul>
+    <p><strong>정규화 기준:</strong> E=7%, V=0.9</p>
+
+    <h3 style="color: #ffa500;">2. 개발 목적과 방향성</h3>
+    <ul>
+      <li>객관적이고 균형 있는 성과 평가</li>
+      <li>실제 채널 운영 효율성 증대</li>
+      <li>직관적이고 신뢰 가능한 지표 제공</li>
+    </ul>
+
+    <h3 style="color: #ffa500;">3. 세부 지표 설명</h3>
+    <ul>
+      <li><strong>E (참여율):</strong> (좋아요+댓글)/조회수 × 100(%)</li>
+      <li><strong>V (조회수 일관성):</strong> 1 - (표준편차/평균 조회수)</li>
+      <li><strong>U (업로드 빈도):</strong> 최근 60일 업로드수/60 × 100(%)</li>
+      <li><strong>P (긍정 댓글 비율):</strong> 긍정 댓글 수/총 댓글 수 × 100(%)</li>
+    </ul>
+
+    <h3 style="color: #ffa500;">4. 벤치마크 요약</h3>
+    <table style="width:100%; margin-top:10px; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="border:1px solid #333; background-color:#333; color:#ffa500;">지표</th>
+          <th style="border:1px solid #333; background-color:#333; color:#ffa500;">벤치마크 기준</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="border:1px solid #333; text-align:center;">E</td><td style="border:1px solid #333; text-align:center;">7%</td></tr>
+        <tr><td style="border:1px solid #333; text-align:center;">V</td><td style="border:1px solid #333; text-align:center;">0.9</td></tr>
+        <tr><td style="border:1px solid #333; text-align:center;">U</td><td style="border:1px solid #333; text-align:center;">60일 매일 업로드=100%</td></tr>
+        <tr><td style="border:1px solid #333; text-align:center;">P</td><td style="border:1px solid #333; text-align:center;">100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 <script>
 
 const API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";
@@ -506,7 +556,10 @@ async function analyzeSentiment(comments) {
   const positiveComments = sentimentData.sentences.filter(s => s.sentiment.score >= 0).length;
   return ((positiveComments / sentimentData.sentences.length) * 100).toFixed(1);
 }
-  
+function toggleVibeInfo() {
+  const vibeInfo = document.getElementById('vibeInfo');
+  vibeInfo.style.display = (vibeInfo.style.display === 'none' || vibeInfo.style.display === '') ? 'block' : 'none';
+}  
 </script>
 </body>
 </html>
