@@ -443,22 +443,28 @@ window.onload = function () {
 };
 
 //
-  function calculateVIBE(E, V, U, P) {
+function calculateVIBE(E, V, U, P) {
   const mode = document.querySelector('input[name="mode"]:checked').value;
-  
+
+  // 설정한 벤치마크 값 기준으로 E, V를 정규화
+  const E_benchmark = 7;     // 참여율(%) 벤치마크
+  const V_benchmark = 0.9;   // 조회수 일관성 벤치마크
+
+  const E_normalized = (E / E_benchmark) * 100;
+  const V_normalized = (V / V_benchmark) * 100;
+
   let weights;
   if (mode === 'steady') {
-    weights = P ? { e: 0.45, v: 0.35, u: 0.1, p: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
+    weights = { e: 0.40, v: 0.40, u: 0.075, p: 0.125 };
   } else {
-    weights = P ? { e: 0.55, v: 0.25, u: 0.1, p: 0.1 } : { e: 0.6, v: 0.3, u: 0.1 };
+    weights = { e: 0.50, v: 0.30, u: 0.075, p: 0.125 };
   }
 
-  let vibeIndex;
-  if (P) {
-    vibeIndex = (E * weights.e) + (V * 100 * weights.v) + (U * weights.u) + (P * weights.p);
-  } else {
-    vibeIndex = (E * weights.e) + (V * 100 * weights.v) + (U * weights.u);
-  }
+  // 최종 VIBE INDEX 계산 (P값은 항상 들어감)
+  let vibeIndex = (E_normalized * weights.e) 
+                + (V_normalized * weights.v) 
+                + (U * weights.u) 
+                + (P * weights.p);
 
   return vibeIndex.toFixed(1);
 }
