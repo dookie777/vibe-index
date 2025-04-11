@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>YouTube VIBE Index Analyzer</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js"></script>
+
 <style>
 body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
 .container { padding: 20px; max-width: 1200px; margin: auto; }
@@ -77,6 +80,10 @@ th { background-color: #333; color: #ffa500; }
 </style>
 </head>
 <body>
+  <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+  <button onclick="downloadFullExcel()" style="padding:8px 15px; background-color:#ffa500; color:#000; border:none; border-radius:8px; cursor:pointer;">Excel 다운로드</button>
+  <button onclick="downloadPDF()" style="padding:8px 15px; background-color:#ffa500; color:#000; border:none; border-radius:8px; cursor:pointer;">PDF 다운로드</button>
+</div>
   <div class="container">
     <h1>YouTube VIBE Index Analyzer</h1>
 
@@ -598,6 +605,92 @@ function toggleVibeInfo() {
   const vibeInfo = document.getElementById('vibeInfo');
   vibeInfo.style.display = (vibeInfo.style.display === 'none' || vibeInfo.style.display === '') ? 'block' : 'none';
 }  
+  async function downloadFullExcel() {
+  const url = document.getElementById('singleChannelUrl').value;
+  const id = await extractChannelId(url);
+  if (!id) {
+    alert("채널 ID를 찾을 수 없습니다.");
+    return;
+  }
+
+  const d = await fetchChannelData(id);
+  let P = null;
+  let commentCount = 0;
+  let analyzedVideoCount = 0;
+
+  const recentVideos = await fetchRecentVideos(id, 50);
+  let comments = [];
+  analyzedVideoCount = 0;
+
+  for (let videoId of recentVideos) {
+    if (comments.length >= 100) break;
+
+    const prevCommentCount = comments.length;
+    comments = await fetchComments(videoId, comments, 100 - comments.length);
+    if (comments.length > prevCommentCount) analyzedVideoCount++;
+  }
+
+  commentCount = comments.length;
+  if (commentCount > 0) {
+    P = await analyzeSentiment(comments);
+  }
+
+  const wb = XLSX.utils.book_new();
+
+  const channelInfo = [
+    ["채널명", d.name],
+    ["구독자 수", d.subs],
+    ["채널 개설일", d.created],
+    ["총 업로드 수", d.uploadsTotal],
+    ["전체 조회수", d.totalViews],
+    ["데이터 수집일", new Date().toLocaleDateString()]
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(channelInfo), "채널 기본 정보");
+
+  const metrics = [
+    ["지표", "값"],
+    ["VIBE Index", calculateVIBE(d.E, d.V, d.U, P, parseInt(d.views.replace(/,/g, '')))],
+    ["E (참여율 %)", d.E],
+    ["좋아요 수", d.likes],
+    ["댓글 수", d.comments],
+    ["조회수", d.views],
+    ["V (조회수 일관성)", d.V],
+    ["평균 조회수", d.avgViews],
+    ["조회수 표준편차", d.stdViews],
+    ["U (업로드 빈도 %)", d.U],
+    ["최근 60일 업로드 수", d.videoCount60days],
+    ["P (긍정 댓글 비율 %)", P ? P : "N/A"],
+    ["댓글 분석 대상 수", commentCount],
+    ["댓글 분석 영상 수", analyzedVideoCount]
+  ];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metrics), "세부 지표");
+
+  const videoData = d.videos.map(v => [
+    v.snippet.title,
+    v.snippet.publishedAt.slice(0, 10),
+    (+v.statistics.viewCount || 0),
+    (+v.statistics.likeCount || 0),
+    (+v.statistics.commentCount || 0)
+  ]);
+  videoData.unshift(["제목", "업로드 날짜", "조회수", "좋아요 수", "댓글 수"]);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(videoData), "최근 영상 50개");
+
+  XLSX.writeFile(wb, `${d.name}_full_analysis_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// PDF 다운로드 함수 추가
+function downloadPDF() {
+  const element = document.body;
+  const opt = {
+    margin: 0.5,
+    filename: `YouTube_VIBE_Index_${new Date().toISOString().slice(0,10)}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
 </script>
 </body>
 </html>
