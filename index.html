@@ -265,13 +265,29 @@ button[onclick="toggleVibeInfo()"] {
       <li>직관적이고 신뢰 가능한 지표 제공</li>
     </ul>
 
-    <h3 style="color: #ffa500;">3. 세부 지표 설명</h3>
+    <h3 style="color: #ffa500;">3. 세부 지표 설명 (보정 기준 포함)</h3>
+<ul>
+  <li><strong>E (참여율, Engagement Rate):</strong> (좋아요 + 댓글) / 조회수 × 100 (%)</li>
+  
+  <li><strong>V (조회수 일관성, Viewership Consistency):</strong>
+    1 - (표준편차 / 평균 조회수)<br/>
+    <strong style="color:#ffa500;">※ 영상 수 보정 기준 (최근 60일간)</strong>
     <ul>
-      <li><strong>E (참여율):</strong> (좋아요+댓글)/조회수 × 100(%)</li>
-      <li><strong>V (조회수 일관성): 1 - (표준편차/평균 조회수), 하한값은 0으로 설정 (마이너스 값 발생 시 0 처리)</li>
-      <li><strong>U (업로드 빈도):</strong> 최근 60일 업로드수/60 × 100(%)</li>
-      <li><strong>P (긍정 댓글 비율):</strong> 긍정 댓글 수/총 댓글 수 × 100(%)</li>
+      <li>최근 60일간 영상 수가 10개 이상일 때 → 정상 V값 100% 반영</li>
+      <li>최근 60일간 영상 수가 2~9개일 때 → (영상 수 ÷ 10) 비율로 V값 조정 반영<br/>
+        <small style="color:#AAAAAA;">(예: 영상 5개 → 정상 V값의 50% 반영)</small></li>
+      <li>최근 60일간 영상 수가 1개 이하일 때 → 신뢰성 부족으로 V값을 0으로 처리</li>
     </ul>
+  </li>
+  
+  <li><strong>U (업로드 빈도, Upload Frequency):</strong>
+    최근 60일 업로드 수 ÷ 60 × 100 (%)<br/>
+    <strong style="color:#ffa500;">※ 최대값: 100%</strong> (60일 동안 매일 업로드 시)</li>
+  
+  <li><strong>P (긍정 댓글 비율, Positive Comment Rate):</strong>
+    긍정 댓글 수 ÷ 총 댓글 수 × 100 (%)<br/>
+    <strong style="color:#ffa500;">※ 댓글 비공개 또는 수집 불가 시: 0점 처리</strong></li>
+</ul>
 
     <h3 style="color: #ffa500;">4. 벤치마크 요약</h3>
     <table style="width:100%; margin-top:10px; border-collapse:collapse;">
@@ -413,7 +429,6 @@ function getModeWeights() {
   return mode === 'trendy' ? { e: 0.6, v: 0.3, u: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
 }
 
-async function fetchChannelData(channelId) {
   const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
   const chData = await chRes.json();
   const ch = chData.items[0];
@@ -443,7 +458,10 @@ async function fetchChannelData(channelId) {
   const avg = views.length ? sum(views) / views.length : 0;
   const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
   const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
-  const V = Math.max(1 - (std / avg), 0);
+
+  let V = Math.max(1 - (std / avg), 0);
+  V = adjustV(V, views.length);  // 🚨 V지표 보정 함수 명확히 적용됨
+
   const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
   const w = getModeWeights();
   const VIBE = E * w.e + V * 100 * w.v + U * w.u;
@@ -468,6 +486,7 @@ async function fetchChannelData(channelId) {
     videoCount60days: stats.length
   };
 }
+
 
 function renderCard(d, P, commentCount, analyzedVideoCount) {
   const totalViews = parseInt(d.views.replace(/,/g, ''));
@@ -809,6 +828,73 @@ function downloadPDF() {
   };
   html2pdf().set(opt).from(element).save();
 }
+  // 영상 수 보정 함수 (중복 제거, 최종 버전)
+function adjustV(V, videoCount) {
+  if (videoCount <= 1) return 0;
+  if (videoCount >= 10) return V;
+  return +(V * (videoCount / 10)).toFixed(2);
+}
+
+// 채널 데이터 불러오기 (중복 제거된 최종 버전)
+async function fetchChannelData(channelId) {
+  const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
+  const chData = await chRes.json();
+  const ch = chData.items[0];
+
+  let nextPageToken = "";
+  let allVideos = [];
+  do {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
+    const json = await res.json();
+    allVideos.push(...json.items);
+    nextPageToken = json.nextPageToken || "";
+  } while (nextPageToken && allVideos.length < 150);
+
+  const videoIds = allVideos.map(v => v.id.videoId).filter(Boolean);
+  const stats = [];
+  for (let i = 0; i < videoIds.length; i += 50) {
+    const batch = videoIds.slice(i, i + 50).join(",");
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY}`);
+    const json = await res.json();
+    stats.push(...json.items);
+  }
+
+  const views = stats.map(v => +v.statistics.viewCount || 0);
+  const likes = stats.map(v => +v.statistics.likeCount || 0);
+  const comments = stats.map(v => +v.statistics.commentCount || 0);
+  const sum = arr => arr.reduce((a,b)=>a+b,0);
+  const avg = views.length ? sum(views) / views.length : 0;
+  const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
+  const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
+
+  let V = Math.max(1 - (std / avg), 0);
+  V = adjustV(V, views.length);  // 🚨 V 지표 보정 함수 적용됨
+
+  const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
+  const w = getModeWeights();
+  const VIBE = E * w.e + V * 100 * w.v + U * w.u;
+
+  return {
+    name: ch.snippet.title,
+    thumbnail: ch.snippet.thumbnails.default.url,
+    subs: Number(ch.statistics.subscriberCount).toLocaleString() + '명',
+    created: ch.snippet.publishedAt.split('T')[0],
+    uploadsTotal: Number(ch.statistics.videoCount).toLocaleString() + '개',
+    totalViews: Number(ch.statistics.viewCount).toLocaleString(),
+    likes: sum(likes).toLocaleString(),
+    comments: sum(comments).toLocaleString(),
+    views: sum(views).toLocaleString(),
+    avgViews: Math.round(avg).toLocaleString(),
+    stdViews: Math.round(std).toLocaleString(),
+    E: E.toFixed(1),
+    V: V.toFixed(2),
+    U: U.toFixed(1),
+    VIBE: VIBE.toFixed(1),
+    videos: stats,
+    videoCount60days: stats.length
+  };
+}
+
 function renderVideoTable(videos) {
   let tableHtml = `
     <table>
