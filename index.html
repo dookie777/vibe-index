@@ -111,6 +111,48 @@ footer {
   align-items: center;
   z-index: 1000;
 }
+.mode-selector {
+  margin-bottom: 25px; /* 버튼과 결과 카드 간격 확보 */
+}
+
+#compareResult {
+  margin-top: 20px; /* 멀티 채널 결과 카드 위쪽 간격 확보 */
+  padding: 10px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  overflow-x: auto;
+  justify-content: flex-start;
+}
+
+.result-card {
+  margin-top: 10px;
+}
+#videoTable {
+  display: block !important;
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+#videoTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  color: #ffffff;
+}
+
+#videoTable th, 
+#videoTable td {
+  padding: 6px 8px;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+#videoTable th {
+  background-color: #333;
+  color: #ffa500;
+}
 
 </style>
 </head>
