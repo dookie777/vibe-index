@@ -524,12 +524,13 @@ function renderCard(d, P, commentCount, analyzedVideoCount) {
 
       ${P ? `
         <div class="metric">
-          <span class="label">P (Positive Comment Rate):</span> 
-          <span class="value">${P}%</span>
-          <div class="sub-details">
-            - 분석 대상 댓글 수: ${commentCount}개<br/>
-            - 분석 대상 영상 수: ${analyzedVideoCount}개
-          </div>
+  <span class="label">P (Positive Comment Rate):</span> 
+  <span class="value">${P}%</span>
+  <div class="sub-details">
+    - 분석 댓글 수: ${commentCount > 0 ? commentCount + '개' : '댓글 비공개'}<br/>
+    - 분석 영상 수: ${analyzedVideoCount > 0 ? analyzedVideoCount + '개' : '댓글 비공개'}
+  </div>
+</div>
         </div>` : ''}
     </div>`;
 }
@@ -563,15 +564,15 @@ async function analyzeSingleChannel() {
 
   if (commentCount > 0) {
     P = await analyzeSentiment(comments);
+  } else {
+    P = 0; // 🔴 댓글이 없거나 비공개일 때 P값 명확히 0점 처리
   }
 
   document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount, analyzedVideoCount);
 
-  // 🚩 추가한 코드 (정상 데이터 전달 확인)
   const videoTableHTML = renderVideoTable(d.videos);
   document.getElementById('videoTable').innerHTML = videoTableHTML;
 
-  // 🚨 강제 스크롤 (콘텐츠 리스트가 안보이면 강제로 스크롤)
   document.getElementById('videoTable').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -595,29 +596,32 @@ async function compareChannels() {
 
     const d = await fetchChannelData(id);
 
-    let P = null;
-    let commentCount = 0;
-    let analyzedVideoCount = 0;
+let P = null;
+let commentCount = 0;
+let analyzedVideoCount = 0;
 
 const recentVideos = await fetchRecentVideos(id, 50);
 
 let comments = [];
-analyzedVideoCount = 0;  // 반드시 0으로 초기화
+analyzedVideoCount = 0;
+
 for (let videoId of recentVideos) {
   if (comments.length >= 100) break;
-  
-  const prevCommentCount = comments.length;  // 댓글 수 저장 (새로 추가!)
+
+  const prevCommentCount = comments.length;
   comments = await fetchComments(videoId, comments, 100 - comments.length);
 
-  if (comments.length > prevCommentCount) {  // 댓글이 추가되면 분석 영상 수 증가 (새로 추가!)
-    analyzedVideoCount++;
-  }
+  if (comments.length > prevCommentCount) analyzedVideoCount++;
 }
+
 commentCount = comments.length;
 
-    if (commentCount > 0) {
-      P = await analyzeSentiment(comments);
-    }
+if (commentCount > 0) {
+  P = await analyzeSentiment(comments);
+} else {
+  P = 0;  // 🔴 명확히 0점으로 처리 (비공개일 때)
+}
+
 
     result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
   }
@@ -631,10 +635,8 @@ window.onload = function () {
 //
 function calculateVIBE(E, V, U, P, totalViews) {
   const mode = document.querySelector('input[name="mode"]:checked').value;
-
-  // 설정한 벤치마크 값 기준으로 E, V를 정규화
-  const E_benchmark = 7;     // 참여율(%) 벤치마크
-  const V_benchmark = 0.9;   // 조회수 일관성 벤치마크
+  const E_benchmark = 7;
+  const V_benchmark = 0.9;
 
   const E_normalized = (E / E_benchmark) * 100;
   const V_normalized = (V / V_benchmark) * 100;
@@ -651,7 +653,6 @@ function calculateVIBE(E, V, U, P, totalViews) {
                 + (U * weights.u) 
                 + (P * weights.p);
 
-  // 조회수 기반 가중치 적용
   const viewWeight = getViewCountWeight(totalViews);
   vibeIndex *= viewWeight;
 
@@ -672,7 +673,7 @@ function getViewCountWeight(totalViews) {
 
 
 function generateEquation(E, V, U, P) {
-    return `= E(${E}%) + V(${V}) + U(${U}%) + P(${P}%)`;
+  return `= E(${E}%) + V(${V}) + U(${U}%) + P(${P}%)`;
 }
 
 // 🚩 추가될 3가지 함수들
@@ -690,9 +691,20 @@ async function fetchRecentVideos(channelId, maxVideos = 50) {
 }
 
 async function fetchComments(videoId, collectedComments, maxComments) {
-  const res = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY}`);
-  const data = await res.json();
-  return collectedComments.concat(data.items.map(item => item.snippet.topLevelComment.snippet.textOriginal));
+  try {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY}`);
+    const data = await res.json();
+
+    if (!data.items) {
+      console.warn("댓글 접근 제한으로 인해 댓글 데이터를 가져올 수 없습니다. Video ID:", videoId);
+      return collectedComments;
+    }
+
+    return collectedComments.concat(data.items.map(item => item.snippet.topLevelComment.snippet.textOriginal));
+  } catch (error) {
+    console.error("댓글 API 호출 실패:", error);
+    return collectedComments; // 기존 댓글만 반환
+  }
 }
 
 const NLP_API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";  // NLP용 API키 입력
