@@ -545,29 +545,36 @@ async function analyzeSingleChannel() {
   let commentCount = 0;
   let analyzedVideoCount = 0;
 
-const recentVideos = await fetchRecentVideos(id, 50);
+  const recentVideos = await fetchRecentVideos(id, 50);
 
-let comments = [];
-analyzedVideoCount = 0;
-for (let videoId of recentVideos) {
-  if (comments.length >= 100) break;
-  
-  const prevCommentCount = comments.length;
-  comments = await fetchComments(videoId, comments, 100 - comments.length);
+  let comments = [];
+  analyzedVideoCount = 0;
+  for (let videoId of recentVideos) {
+    if (comments.length >= 100) break;
 
-  if (comments.length > prevCommentCount) {
-    analyzedVideoCount++;
+    const prevCommentCount = comments.length;
+    comments = await fetchComments(videoId, comments, 100 - comments.length);
+
+    if (comments.length > prevCommentCount) {
+      analyzedVideoCount++;
+    }
   }
-}
-commentCount = comments.length;
+  commentCount = comments.length;
 
   if (commentCount > 0) {
     P = await analyzeSentiment(comments);
   }
 
   document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount, analyzedVideoCount);
-  document.getElementById('videoTable').innerHTML = renderVideoTable(d.videos);
+
+  // 🚩 추가한 코드 (정상 데이터 전달 확인)
+  const videoTableHTML = renderVideoTable(d.videos);
+  document.getElementById('videoTable').innerHTML = videoTableHTML;
+
+  // 🚨 강제 스크롤 (콘텐츠 리스트가 안보이면 강제로 스크롤)
+  document.getElementById('videoTable').scrollIntoView({ behavior: 'smooth' });
 }
+
 
 async function compareChannels() {
   const urls = [
