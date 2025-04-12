@@ -525,7 +525,7 @@ function renderCard(d, P, commentCount, analyzedVideoCount) {
       ${P ? `
         <div class="metric">
           <span class="label">P (Positive Comment Rate):</span> 
-          <span class="value" style="color:#888888;">${P}%</span>
+          <span class="value">${P}%</span>
           <div class="sub-details">
             - 분석 대상 댓글 수: ${commentCount}개<br/>
             - 분석 대상 영상 수: ${analyzedVideoCount}개
@@ -789,6 +789,45 @@ function downloadPDF() {
     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
   };
   html2pdf().set(opt).from(element).save();
+}
+function renderVideoTable(videos) {
+  let tableHtml = `
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>영상 제목</th>
+          <th>업로드 날짜</th>
+          <th>조회수</th>
+          <th>좋아요 수</th>
+          <th>댓글 수</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  videos.forEach((video, idx) => {
+    const title = video.snippet.title;
+    const date = video.snippet.publishedAt.slice(0, 10);
+    const views = (+video.statistics.viewCount || 0).toLocaleString();
+    const likes = (+video.statistics.likeCount || 0).toLocaleString();
+    const comments = (+video.statistics.commentCount || 0).toLocaleString();
+
+    tableHtml += `
+      <tr>
+        <td>${idx + 1}</td>
+        <td style="text-align: left; padding-left: 10px;">${title}</td>
+        <td>${date}</td>
+        <td>${views}</td>
+        <td>${likes}</td>
+        <td>${comments}</td>
+      </tr>
+    `;
+  });
+
+  tableHtml += '</tbody></table>';
+
+  return tableHtml;
 }
 
 </script>
