@@ -868,7 +868,7 @@ async function fetchChannelData(channelId) {
   const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
 
   let V = Math.max(1 - (std / avg), 0);
-  V = adjustV(V, views.length);  // 🚨 V 지표 보정 함수 적용됨
+  V = adjustV(V, views.length);  // 🚨 V지표 보정 함수 명확히 적용됨
 
   const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
   const w = getModeWeights();
@@ -894,6 +894,7 @@ async function fetchChannelData(channelId) {
     videoCount60days: stats.length
   };
 }
+
 
 function renderVideoTable(videos) {
   let tableHtml = `
