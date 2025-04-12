@@ -101,6 +101,41 @@ th { background-color: #333; color: #ffa500; }
     color: #ffff00;  /* 노란색으로 강조 */
     font-weight: bold;
   }
+/* 결과 카드 줄 간격 및 패딩 조정 */
+.result-card {
+  line-height: 1.4; /* 줄 간격을 줄여서 보기 좋게 */
+  padding: 15px; /* 내부 여백도 최적화 */
+}
+
+/* EVUP 지표명 색상 (흰색으로 통일) */
+.metric span.label {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* EVUP 지표 숫자 폰트 크기 축소 */
+.metric span.value {
+  font-size: 1.3rem; /* 원래보다 조금 작게 */
+}
+
+/* VIBE Index 숫자 스타일 변경 (크기, 색상) */
+.metric span.value.vibe-index {
+  font-size: 1.6rem; /* 원래보다 약간 축소 */
+  color: #ffa500; /* 주황색 */
+  font-weight: bold;
+}
+
+/* VIBE Index 옆 "Point" 스타일 설정 */
+.metric span.value.vibe-index small {
+  color: #ffffff; /* 흰색 */
+  font-size: 0.9rem; /* 작은 글씨 */
+}
+
+/* EVUP 하부 설명 지표 볼드체 해제 */
+.sub-details {
+  font-weight: normal; /* 볼드체가 아닌 일반 글씨로 설정 */
+  line-height: 1.4;
+}  
 </style>
 </head>
 <body>
@@ -122,10 +157,10 @@ th { background-color: #333; color: #ffa500; }
         <button onclick="analyzeSingleChannel()">Analysis</button>
       </div>
 
-      <div class="mode-selector">
-        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
-      </div>
+<div class="mode-selector">
+  <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+  <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+</div>
 
       <div id="singleResult"></div>
       <div id="videoTable"></div>
@@ -376,8 +411,8 @@ async function fetchChannelData(channelId) {
 }
 
 function renderCard(d, P, commentCount, analyzedVideoCount) {
-const totalViews = parseInt(d.views.replace(/,/g, ''));
-const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
+  const totalViews = parseInt(d.views.replace(/,/g, ''));
+  const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
   const equation = generateEquation(d.E, d.V, d.U, P);
 
   return `
@@ -397,7 +432,7 @@ const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
 
       <div class="metric">
         <span class="label">VIBE Index:</span> 
-        <span class="value vibe-index">${finalVibe}</span>
+        <span class="value vibe-index">${finalVibe}<small> Point</small></span>
       </div>
       <div class="equation">${equation}</div>
 
@@ -431,31 +466,13 @@ const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
       ${P ? `
         <div class="metric">
           <span class="label">P (Positive Comment Rate):</span> 
-          <span class="value">${P}%</span>
+          <span class="value" style="color:#888888;">${P}%</span>
           <div class="sub-details">
             - 분석 대상 댓글 수: ${commentCount}개<br/>
             - 분석 대상 영상 수: ${analyzedVideoCount}개
           </div>
         </div>` : ''}
     </div>`;
-}
-
-function renderVideoTable(videos) {
-  return `
-    <table>
-      <thead><tr><th>제목</th><th>날짜</th><th>조회수</th><th>좋아요</th><th>댓글</th></tr></thead>
-      <tbody>
-        ${videos.map(v => `
-          <tr>
-            <td><a href="https://www.youtube.com/watch?v=${v.id}" target="_blank">${v.snippet.title}</a></td>
-            <td>${v.snippet.publishedAt.slice(2,10)}</td>
-            <td>${(+v.statistics.viewCount || 0).toLocaleString()}</td>
-            <td>${(+v.statistics.likeCount || 0).toLocaleString()}</td>
-            <td>${(+v.statistics.commentCount || 0).toLocaleString()}</td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>`;
 }
 
 async function analyzeSingleChannel() {
