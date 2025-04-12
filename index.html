@@ -8,12 +8,21 @@
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js"></script>
 
 <style>
-body { background-color: #121212; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+body { background-color: #000000; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
 .container { padding: 20px; max-width: 1200px; margin: auto; }
 h1 { font-size: 2rem; text-align: center; color: #ffa500; }
 .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
 .tab { padding: 10px 20px; cursor: pointer; background-color: #1e1e1e; margin: 0 5px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
-.tab.active { background-color: #ffa500; color: #000; }
+.tab.active { 
+  background-color: #333333; 
+  color: #FFFFFF; 
+}
+
+.tab { 
+  background-color: #222222; 
+  color: #AAAAAA; 
+  border-radius: 10px;
+}
 .input-area { text-align: center; margin-bottom: 20px; }
 .input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
 .input-area button { padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #ffa500; color: #000; cursor: pointer; font-weight: bold; }
@@ -77,12 +86,27 @@ th { background-color: #333; color: #ffa500; }
 .mode-selector input[type="radio"] {
   margin-right: 5px;
 }
+  .result-card {
+  line-height: 1.6;
+  padding: 25px;
+}
+
+.channel-details,
+.metric,
+.sub-details {
+  line-height: 1.5;
+}
+    .metric span.value.vibe-index {
+    font-size: 2rem; /* 더 크게 강조 */
+    color: #ffff00;  /* 노란색으로 강조 */
+    font-weight: bold;
+  }
 </style>
 </head>
 <body>
   <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
-  <button onclick="downloadFullExcel()" style="padding:8px 15px; background-color:#ffa500; color:#000; border:none; border-radius:8px; cursor:pointer;">Excel 다운로드</button>
-  <button onclick="downloadPDF()" style="padding:8px 15px; background-color:#ffa500; color:#000; border:none; border-radius:8px; cursor:pointer;">PDF 다운로드</button>
+  <button onclick="downloadFullExcel()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download Excel</button>
+  <button onclick="downloadPDF()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download PDF</button>
 </div>
   <div class="container">
     <h1>YouTube VIBE Index Analyzer</h1>
@@ -128,9 +152,9 @@ th { background-color: #333; color: #ffa500; }
     <div class="error" id="errorMsg"></div>
   </div>
   <div style="text-align:center; padding: 20px; margin-top:30px;">
-  <button onclick="toggleVibeInfo()" style="padding:8px 20px; background-color:#1e1e1e; border:none; color:#ffa500; border-radius:8px; cursor:pointer;">
-    About VIBE INDEX
-  </button>
+<button onclick="toggleVibeInfo()" style="padding:6px 15px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">
+  About VIBE INDEX
+</button>
 
   <div id="vibeInfo" style="display:none; margin-top:20px; background-color:#1e1e1e; padding:20px; border-radius:12px; text-align:left;">
     <h2 style="color: #ffa500; text-align:center;">YouTube VIBE INDEX 소개</h2>
@@ -373,7 +397,7 @@ const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
 
       <div class="metric">
         <span class="label">VIBE Index:</span> 
-        <span class="value">${finalVibe}</span>
+        <span class="value vibe-index">${finalVibe}</span>
       </div>
       <div class="equation">${equation}</div>
 
@@ -692,7 +716,7 @@ function downloadPDF() {
 }
 
 </script>
-<footer style="padding: 10px 0; border-top: 1px solid #333; font-size: 0.8rem; color: #888; position: fixed; bottom: 0; left: 0; width: 100%; background-color: #121212; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
+<footer style="padding: 10px 0; border-top: 1px solid #333; font-size: 0.8rem; color: #888; position: fixed; bottom: 0; left: 0; width: 100%; background-color: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
   <img src="https://github.com/dookie777/vibe-index/blob/main/Logo_white.png?raw=true"
        alt="The Eroom Sports Logo"
        style="width: 100px; height: auto; margin-bottom: 5px;">
