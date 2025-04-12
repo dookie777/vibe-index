@@ -155,7 +155,7 @@ th { background-color: #333; color: #ffa500; }
     <h3 style="color: #ffa500;">3. 세부 지표 설명</h3>
     <ul>
       <li><strong>E (참여율):</strong> (좋아요+댓글)/조회수 × 100(%)</li>
-      <li><strong>V (조회수 일관성):</strong> 1 - (표준편차/평균 조회수)</li>
+      <li><strong>V (조회수 일관성): 1 - (표준편차/평균 조회수), 하한값은 0으로 설정 (마이너스 값 발생 시 0 처리)</li>
       <li><strong>U (업로드 빈도):</strong> 최근 60일 업로드수/60 × 100(%)</li>
       <li><strong>P (긍정 댓글 비율):</strong> 긍정 댓글 수/총 댓글 수 × 100(%)</li>
     </ul>
@@ -325,7 +325,7 @@ async function fetchChannelData(channelId) {
   const avg = views.length ? sum(views) / views.length : 0;
   const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
   const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
-  const V = 1 - (std / avg);
+  const V = Math.max(1 - (std / avg), 0);
   const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
   const w = getModeWeights();
   const VIBE = E * w.e + V * 100 * w.v + U * w.u;
