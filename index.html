@@ -190,6 +190,40 @@ button[onclick="toggleVibeInfo()"] {
   color: #ffffff !important; /* 폰트 색상 흰색으로 명확히 */
   border-radius: 8px !important; /* 모서리 둥글게 */
 }
+  /* ✅ 전체 선수 통계 탭 가로스크롤 확실히 복구 */
+#tab-all .scroll-container {
+  overflow-x: auto !important;
+}
+
+#tab-all table {
+  min-width: max-content !important;
+}
+
+/* ✅ 선수 개인 검색 탭 세로스크롤 디자인 통일 */
+#tab-player .stats-container {
+  overflow-y: auto !important;
+  height: calc(100vh - 250px) !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar-track {
+  background: #121212 !important;
+  border-radius: 5px !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar-thumb {
+  background: #555 !important;
+  border-radius: 5px !important;
+  border: 2px solid #121212 !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar-thumb:hover {
+  background: #FFA500 !important;
+}
 </style>
 </head>
 <body>
