@@ -190,6 +190,40 @@ background-color: #222222 !important; /* 더 진한 배경색 */
 color: #ffffff !important; /* 폰트 색상 흰색으로 명확히 */
 border-radius: 8px !important; /* 모서리 둥글게 */
 }
+  /* ✅ 전체 선수 통계 탭 가로스크롤 확실히 복구 */
+#tab-all .scroll-container {
+  overflow-x: auto !important;
+}
+
+#tab-all table {
+  min-width: max-content !important;
+}
+
+/* ✅ 선수 개인 검색 탭 세로스크롤 디자인 통일 */
+#tab-player .stats-container {
+  overflow-y: auto !important;
+  height: calc(100vh - 250px) !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar-track {
+  background: #121212 !important;
+  border-radius: 5px !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar-thumb {
+  background: #555 !important;
+  border-radius: 5px !important;
+  border: 2px solid #121212 !important;
+}
+
+#tab-player .stats-container::-webkit-scrollbar-thumb:hover {
+  background: #FFA500 !important;
+}
 </style>
 </head>
 <body>
@@ -428,65 +462,6 @@ function getModeWeights() {
 const mode = document.querySelector('input[name="mode"]:checked').value;
 return mode === 'trendy' ? { e: 0.6, v: 0.3, u: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
 }
-
-  const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
-  const chData = await chRes.json();
-  const ch = chData.items[0];
-
-  let nextPageToken = "";
-  let allVideos = [];
-  do {
-    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
-    const json = await res.json();
-    allVideos.push(...json.items);
-    nextPageToken = json.nextPageToken || "";
-  } while (nextPageToken && allVideos.length < 150);
-
-  const videoIds = allVideos.map(v => v.id.videoId).filter(Boolean);
-  const stats = [];
-  for (let i = 0; i < videoIds.length; i += 50) {
-    const batch = videoIds.slice(i, i + 50).join(",");
-    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY}`);
-    const json = await res.json();
-    stats.push(...json.items);
-  }
-
-  const views = stats.map(v => +v.statistics.viewCount || 0);
-  const likes = stats.map(v => +v.statistics.likeCount || 0);
-  const comments = stats.map(v => +v.statistics.commentCount || 0);
-  const sum = arr => arr.reduce((a,b)=>a+b,0);
-  const avg = views.length ? sum(views) / views.length : 0;
-  const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
-  const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
-
-  let V = Math.max(1 - (std / avg), 0);
-  V = adjustV(V, views.length);  // 🚨 V지표 보정 함수 명확히 적용됨
-
-  const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
-  const w = getModeWeights();
-  const VIBE = E * w.e + V * 100 * w.v + U * w.u;
-
-  return {
-    name: ch.snippet.title,
-    thumbnail: ch.snippet.thumbnails.default.url,
-    subs: Number(ch.statistics.subscriberCount).toLocaleString() + '명',
-    created: ch.snippet.publishedAt.split('T')[0],
-    uploadsTotal: Number(ch.statistics.videoCount).toLocaleString() + '개',
-    totalViews: Number(ch.statistics.viewCount).toLocaleString(),
-    likes: sum(likes).toLocaleString(),
-    comments: sum(comments).toLocaleString(),
-    views: sum(views).toLocaleString(),
-    avgViews: Math.round(avg).toLocaleString(),
-    stdViews: Math.round(std).toLocaleString(),
-    E: E.toFixed(1),
-    V: V.toFixed(2),
-    U: U.toFixed(1),
-    VIBE: VIBE.toFixed(1),
-    videos: stats,
-    videoCount60days: stats.length
-  };
-}
-
 
 function renderCard(d, P, commentCount, analyzedVideoCount) {
 const totalViews = parseInt(d.views.replace(/,/g, ''));
