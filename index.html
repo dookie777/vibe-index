@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>YouTube VIBE Index Analyzer</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -14,55 +14,55 @@ h1 { font-size: 2rem; text-align: center; color: #ffa500; }
 
 .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
 .tab {
-  padding: 10px 20px;
-  cursor: pointer;
-  background-color: #222222;
-  color: #AAAAAA;
-  margin: 0 5px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  box-shadow: none;
+padding: 10px 20px;
+cursor: pointer;
+background-color: #222222;
+color: #AAAAAA;
+margin: 0 5px;
+border-radius: 10px;
+font-weight: bold;
+font-size: 0.9rem;
+box-shadow: none;
 }
 .tab.active {
-  background-color: #333333;
-  color: #FFFFFF;
+background-color: #333333;
+color: #FFFFFF;
 }
 
 .input-area { text-align: center; margin-bottom: 20px; }
 .input-area input { padding: 10px; margin: 5px; width: 300px; border-radius: 5px; border: none; }
 .input-area button {
-  padding: 10px 20px;
-  margin-left: 10px;
-  border-radius: 5px;
-  border: none;
-  background-color: #ffa500;
-  color: #000;
-  cursor: pointer;
-  font-weight: bold;
-  box-shadow: none;
+padding: 10px 20px;
+margin-left: 10px;
+border-radius: 5px;
+border: none;
+background-color: #ffa500;
+color: #000;
+cursor: pointer;
+font-weight: bold;
+box-shadow: none;
 }
 
 .mode-selector {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-top: 10px;
-  font-size: 0.8rem;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 20px;
+margin-top: 10px;
+font-size: 0.8rem;
 }
 .mode-selector label {
-  font-weight: normal;
+font-weight: normal;
 }
 
 .result-card {
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 0 10px rgba(255,165,0,0.2);
-  width: 360px;
-  line-height: 1.3;
-  text-align: left;
+background-color: #1e1e1e;
+border-radius: 12px;
+padding: 12px;
+box-shadow: 0 0 10px rgba(255,165,0,0.2);
+width: 360px;
+line-height: 1.3;
+text-align: left;
 }
 
 .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
@@ -80,9 +80,9 @@ h1 { font-size: 2rem; text-align: center; color: #ffa500; }
 .metric span.value.vibe-index small { font-size: 0.8rem; color: #ffffff; }
 
 .sub-details {
-  font-size: 0.8rem;
-  font-weight: normal;
-  line-height: 1.3;
+font-size: 0.8rem;
+font-weight: normal;
+line-height: 1.3;
 }
 
 button:hover { opacity: 0.8; }
@@ -96,270 +96,236 @@ th { background-color: #333; color: #ffa500; }
 #compareResult { display: flex; flex-wrap: nowrap; gap: 20px; overflow-x: auto; }
 
 footer {
-  padding: 10px 0;
-  border-top: 1px solid #333;
-  font-size: 0.8rem;
-  color: #888;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #000000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+padding: 10px 0;
+border-top: 1px solid #333;
+font-size: 0.8rem;
+color: #888;
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background-color: #000000;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+z-index: 1000;
 }
 .mode-selector {
-  margin-bottom: 25px; /* 버튼과 결과 카드 간격 확보 */
+margin-bottom: 25px; /* 버튼과 결과 카드 간격 확보 */
 }
 
 #compareResult {
-  margin-top: 20px; /* 멀티 채널 결과 카드 위쪽 간격 확보 */
-  padding: 10px;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
-  overflow-x: auto;
-  justify-content: flex-start;
+margin-top: 20px; /* 멀티 채널 결과 카드 위쪽 간격 확보 */
+padding: 10px;
+display: flex;
+flex-wrap: nowrap;
+gap: 20px;
+overflow-x: auto;
+justify-content: flex-start;
 }
 
 .result-card {
-  margin-top: 10px;
+margin-top: 10px;
 }
 #videoTable {
-  display: block !important;
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 20px;
+display: block !important;
+width: 100%;
+overflow-x: auto;
+margin-top: 20px;
 }
 
 #videoTable table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-  color: #ffffff;
+width: 100%;
+border-collapse: collapse;
+font-size: 0.8rem;
+color: #ffffff;
 }
 
 #videoTable th, 
 #videoTable td {
-  padding: 6px 8px;
-  border: 1px solid #333;
-  text-align: center;
+padding: 6px 8px;
+border: 1px solid #333;
+text-align: center;
 }
 
 #videoTable th {
-  background-color: #333;
-  color: #ffa500;
+background-color: #333;
+color: #ffa500;
 }
 /* 버튼 입체 효과 제거 */
 button {
-  box-shadow: none !important;
-  border: none !important;
+box-shadow: none !important;
+border: none !important;
 }
 
 /* 수식 폰트 크기 조정 */
 .equation {
-  font-size: 0.8rem; /* 폰트 크기 줄임 */
+font-size: 0.8rem; /* 폰트 크기 줄임 */
 }
 
 /* P값 수치 색상 수정 */
 .metric span.value {
-  color: #ffa500 !important; /* 회색을 주황색으로 통일 */
+color: #ffa500 !important; /* 회색을 주황색으로 통일 */
 }
 
 /* About, Download 버튼 입체 효과 제거 */
 button, .about-btn {
-  background-color: #333333 !important;
-  box-shadow: none !important;
+background-color: #333333 !important;
+box-shadow: none !important;
 }
-  /* Analysis 버튼 폰트 색상 변경 (흰색으로) */
+/* Analysis 버튼 폰트 색상 변경 (흰색으로) */
 .input-area button {
-  color: #ffffff !important;
+color: #ffffff !important;
 }
 
 /* About VIBE INDEX 버튼 폰트 크기 한 단계 낮추기 */
 button[onclick="toggleVibeInfo()"] {
-  font-size: 0.7rem !important;
+font-size: 0.7rem !important;
 }
-  /* About VIBE INDEX 버튼 여백 및 색상 조정 */
+/* About VIBE INDEX 버튼 여백 및 색상 조정 */
 button[onclick="toggleVibeInfo()"] {
-  padding: 10px 20px !important; /* 상하좌우 여백 추가 */
-  background-color: #222222 !important; /* 더 진한 배경색 */
-  color: #ffffff !important; /* 폰트 색상 흰색으로 명확히 */
-  border-radius: 8px !important; /* 모서리 둥글게 */
-}
-  /* ✅ 전체 선수 통계 탭 가로스크롤 확실히 복구 */
-#tab-all .scroll-container {
-  overflow-x: auto !important;
-}
-
-#tab-all table {
-  min-width: max-content !important;
-}
-
-/* ✅ 선수 개인 검색 탭 세로스크롤 디자인 통일 */
-#tab-player .stats-container {
-  overflow-y: auto !important;
-  height: calc(100vh - 250px) !important;
-}
-
-#tab-player .stats-container::-webkit-scrollbar {
-  width: 10px !important;
-  height: 10px !important;
-}
-
-#tab-player .stats-container::-webkit-scrollbar-track {
-  background: #121212 !important;
-  border-radius: 5px !important;
-}
-
-#tab-player .stats-container::-webkit-scrollbar-thumb {
-  background: #555 !important;
-  border-radius: 5px !important;
-  border: 2px solid #121212 !important;
-}
-
-#tab-player .stats-container::-webkit-scrollbar-thumb:hover {
-  background: #FFA500 !important;
+padding: 10px 20px !important; /* 상하좌우 여백 추가 */
+background-color: #222222 !important; /* 더 진한 배경색 */
+color: #ffffff !important; /* 폰트 색상 흰색으로 명확히 */
+border-radius: 8px !important; /* 모서리 둥글게 */
 }
 </style>
 </head>
 <body>
-  <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
-  <button onclick="downloadFullExcel()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download Excel</button>
-  <button onclick="downloadPDF()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download PDF</button>
+<div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+<button onclick="downloadFullExcel()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download Excel</button>
+<button onclick="downloadPDF()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download PDF</button>
 </div>
-  <div class="container">
-    <h1>YouTube VIBE Index Analyzer</h1>
+<div class="container">
+<h1>YouTube VIBE Index Analyzer</h1>
 <div style="text-align:center; margin-bottom:20px;">
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('single')">Single Channel</div>
-      <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
-    </div>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('single')">Single Channel</div>
+<div class="tab" onclick="switchTab('compare')">Multi Channel</div>
+</div>
 
-    <div id="single" class="tab-content">
-      <div class="input-area">
-        <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
-        <button onclick="analyzeSingleChannel()">Analysis</button>
-      </div>
+<div id="single" class="tab-content">
+<div class="input-area">
+<input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+<button onclick="analyzeSingleChannel()">Analysis</button>
+</div>
 
 <div class="mode-selector">
-  <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-  <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
 </div>
 
-      <div id="singleResult"></div>
-      <div id="videoTable"></div>
-    </div>
+<div id="singleResult"></div>
+<div id="videoTable"></div>
+</div>
 
-    <div id="compare" class="tab-content" style="display: none;">
-      <div class="input-area">
-        <div class="multi-input-container">
-          <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-          <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-          <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-          <button onclick="compareChannels()">Compare</button>
-        </div>
-      </div>
+<div id="compare" class="tab-content" style="display: none;">
+<div class="input-area">
+<div class="multi-input-container">
+<input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+<input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+<input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+<button onclick="compareChannels()">Compare</button>
+</div>
+</div>
 
-      <div class="mode-selector">
-        <label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-        <label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
-      </div>
+<div class="mode-selector">
+<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
+<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+</div>
 
-      <div id="compareResult"></div>
-    </div>
+<div id="compareResult"></div>
+</div>
 
-    <div class="error" id="errorMsg"></div>
-  </div>
-  <div style="text-align:center; padding: 20px; margin-top:30px;">
+<div class="error" id="errorMsg"></div>
+</div>
+<div style="text-align:center; padding: 20px; margin-top:30px;">
 <button onclick="toggleVibeInfo()" style="padding:6px 15px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">
-  About VIBE INDEX
+About VIBE INDEX
 </button>
 
-  <div id="vibeInfo" style="display:none; margin-top:20px; background-color:#1e1e1e; padding:20px; border-radius:12px; text-align:left;">
-    <h2 style="color: #ffa500; text-align:center;">YouTube VIBE INDEX 소개</h2>
+<div id="vibeInfo" style="display:none; margin-top:20px; background-color:#1e1e1e; padding:20px; border-radius:12px; text-align:left;">
+<h2 style="color: #ffa500; text-align:center;">YouTube VIBE INDEX 소개</h2>
 
-    <h3 style="color: #ffa500;">1. VIBE INDEX 개요 및 산식</h3>
-    <p>VIBE INDEX는 유튜브 채널의 콘텐츠 성과와 시청자 반응을 객관적이고 효율적으로 평가하기 위한 종합 지표입니다.</p>
-    <p><strong>산식:</strong><br>
-      VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가중치U) + (P × 가중치P)</p>
-    <ul>
-      <li><strong>Steady 가중치:</strong> E:40%, V:40%, U:7.5%, P:12.5%</li>
-      <li><strong>Trendy 가중치:</strong> E:50%, V:30%, U:7.5%, P:12.5%</li>
-    </ul>
-    <p><strong>정규화 기준:</strong> E=7%, V=0.9</p>
-
-    <h3 style="color: #ffa500;">2. 개발 목적과 방향성</h3>
-    <ul>
-      <li>객관적이고 균형 있는 성과 평가</li>
-      <li>실제 채널 운영 효율성 증대</li>
-      <li>직관적이고 신뢰 가능한 지표 제공</li>
-    </ul>
-
-    <h3 style="color: #ffa500;">3. 세부 지표 설명 (보정 기준 포함)</h3>
+<h3 style="color: #ffa500;">1. VIBE INDEX 개요 및 산식</h3>
+<p>VIBE INDEX는 유튜브 채널의 콘텐츠 성과와 시청자 반응을 객관적이고 효율적으로 평가하기 위한 종합 지표입니다.</p>
+<p><strong>산식:</strong><br>
+VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가중치U) + (P × 가중치P)</p>
 <ul>
-  <li><strong>E (참여율, Engagement Rate):</strong> (좋아요 + 댓글) / 조회수 × 100 (%)</li>
-  
-  <li><strong>V (조회수 일관성, Viewership Consistency):</strong>
-    1 - (표준편차 / 평균 조회수)<br/>
-    <strong style="color:#ffa500;">※ 영상 수 보정 기준 (최근 60일간)</strong>
-    <ul>
-      <li>최근 60일간 영상 수가 10개 이상일 때 → 정상 V값 100% 반영</li>
-      <li>최근 60일간 영상 수가 2~9개일 때 → (영상 수 ÷ 10) 비율로 V값 조정 반영<br/>
-        <small style="color:#AAAAAA;">(예: 영상 5개 → 정상 V값의 50% 반영)</small></li>
-      <li>최근 60일간 영상 수가 1개 이하일 때 → 신뢰성 부족으로 V값을 0으로 처리</li>
-    </ul>
-  </li>
-  
-  <li><strong>U (업로드 빈도, Upload Frequency):</strong>
-    최근 60일 업로드 수 ÷ 60 × 100 (%)<br/>
-    <strong style="color:#ffa500;">※ 최대값: 100%</strong> (60일 동안 매일 업로드 시)</li>
-  
-  <li><strong>P (긍정 댓글 비율, Positive Comment Rate):</strong>
-    긍정 댓글 수 ÷ 총 댓글 수 × 100 (%)<br/>
-    <strong style="color:#ffa500;">※ 댓글 비공개 또는 수집 불가 시: 0점 처리</strong></li>
+<li><strong>Steady 가중치:</strong> E:40%, V:40%, U:7.5%, P:12.5%</li>
+<li><strong>Trendy 가중치:</strong> E:50%, V:30%, U:7.5%, P:12.5%</li>
+</ul>
+<p><strong>정규화 기준:</strong> E=7%, V=0.9</p>
+
+<h3 style="color: #ffa500;">2. 개발 목적과 방향성</h3>
+<ul>
+<li>객관적이고 균형 있는 성과 평가</li>
+<li>실제 채널 운영 효율성 증대</li>
+<li>직관적이고 신뢰 가능한 지표 제공</li>
 </ul>
 
-    <h3 style="color: #ffa500;">4. 벤치마크 요약</h3>
-    <table style="width:100%; margin-top:10px; border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th style="border:1px solid #333; background-color:#333; color:#ffa500;">지표</th>
-          <th style="border:1px solid #333; background-color:#333; color:#ffa500;">벤치마크 기준</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td style="border:1px solid #333; text-align:center;">E</td><td style="border:1px solid #333; text-align:center;">7%</td></tr>
-        <tr><td style="border:1px solid #333; text-align:center;">V</td><td style="border:1px solid #333; text-align:center;">0.9</td></tr>
-        <tr><td style="border:1px solid #333; text-align:center;">U</td><td style="border:1px solid #333; text-align:center;">60일 매일 업로드=100%</td></tr>
-        <tr><td style="border:1px solid #333; text-align:center;">P</td><td style="border:1px solid #333; text-align:center;">100%</td></tr>
-      </tbody>
-    </table>
-    <h3 style="color: #ffa500;">5. 총 조회수 기반 가중치 설명</h3>
+<h3 style="color: #ffa500;">3. 세부 지표 설명 (보정 기준 포함)</h3>
+<ul>
+<li><strong>E (참여율, Engagement Rate):</strong> (좋아요 + 댓글) / 조회수 × 100 (%)</li>
+
+<li><strong>V (조회수 일관성, Viewership Consistency):</strong>
+1 - (표준편차 / 평균 조회수)<br/>
+<strong style="color:#ffa500;">※ 영상 수 보정 기준 (최근 60일간)</strong>
+<ul>
+<li>최근 60일간 영상 수가 10개 이상일 때 → 정상 V값 100% 반영</li>
+<li>최근 60일간 영상 수가 2~9개일 때 → (영상 수 ÷ 10) 비율로 V값 조정 반영<br/>
+<small style="color:#AAAAAA;">(예: 영상 5개 → 정상 V값의 50% 반영)</small></li>
+<li>최근 60일간 영상 수가 1개 이하일 때 → 신뢰성 부족으로 V값을 0으로 처리</li>
+</ul>
+</li>
+
+<li><strong>U (업로드 빈도, Upload Frequency):</strong>
+최근 60일 업로드 수 ÷ 60 × 100 (%)<br/>
+<strong style="color:#ffa500;">※ 최대값: 100%</strong> (60일 동안 매일 업로드 시)</li>
+
+<li><strong>P (긍정 댓글 비율, Positive Comment Rate):</strong>
+긍정 댓글 수 ÷ 총 댓글 수 × 100 (%)<br/>
+<strong style="color:#ffa500;">※ 댓글 비공개 또는 수집 불가 시: 0점 처리</strong></li>
+</ul>
+
+<h3 style="color: #ffa500;">4. 벤치마크 요약</h3>
+<table style="width:100%; margin-top:10px; border-collapse:collapse;">
+<thead>
+<tr>
+<th style="border:1px solid #333; background-color:#333; color:#ffa500;">지표</th>
+<th style="border:1px solid #333; background-color:#333; color:#ffa500;">벤치마크 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="border:1px solid #333; text-align:center;">E</td><td style="border:1px solid #333; text-align:center;">7%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">V</td><td style="border:1px solid #333; text-align:center;">0.9</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">U</td><td style="border:1px solid #333; text-align:center;">60일 매일 업로드=100%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">P</td><td style="border:1px solid #333; text-align:center;">100%</td></tr>
+</tbody>
+</table>
+<h3 style="color: #ffa500;">5. 총 조회수 기반 가중치 설명</h3>
 <p>채널의 총 조회수가 일정 기준을 초과하면, VIBE INDEX에 추가적인 가중치가 적용됩니다. 이는 채널 규모와 실제적인 영향력을 더 정확히 반영하기 위함입니다.</p>
 
 <table style="width:100%; margin-top:10px; border-collapse:collapse;">
-  <thead>
-    <tr>
-      <th style="border:1px solid #333; background-color:#333; color:#ffa500;">총 조회수 범위</th>
-      <th style="border:1px solid #333; background-color:#333; color:#ffa500;">가중치 (%)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td style="border:1px solid #333; text-align:center;">1,000 이하</td><td style="border:1px solid #333; text-align:center;">70%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">1,001 ~ 10,000</td><td style="border:1px solid #333; text-align:center;">80%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">10,001 ~ 100,000</td><td style="border:1px solid #333; text-align:center;">90%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">100,001 ~ 500,000</td><td style="border:1px solid #333; text-align:center;">100%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">500,001 ~ 1,000,000</td><td style="border:1px solid #333; text-align:center;">105%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">1,000,001 ~ 5,000,000</td><td style="border:1px solid #333; text-align:center;">110%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">5,000,001 ~ 10,000,000</td><td style="border:1px solid #333; text-align:center;">115%</td></tr>
-    <tr><td style="border:1px solid #333; text-align:center;">10,000,001 이상</td><td style="border:1px solid #333; text-align:center;">120%</td></tr>
-  </tbody>
+<thead>
+<tr>
+<th style="border:1px solid #333; background-color:#333; color:#ffa500;">총 조회수 범위</th>
+<th style="border:1px solid #333; background-color:#333; color:#ffa500;">가중치 (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="border:1px solid #333; text-align:center;">1,000 이하</td><td style="border:1px solid #333; text-align:center;">70%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">1,001 ~ 10,000</td><td style="border:1px solid #333; text-align:center;">80%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">10,001 ~ 100,000</td><td style="border:1px solid #333; text-align:center;">90%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">100,001 ~ 500,000</td><td style="border:1px solid #333; text-align:center;">100%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">500,001 ~ 1,000,000</td><td style="border:1px solid #333; text-align:center;">105%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">1,000,001 ~ 5,000,000</td><td style="border:1px solid #333; text-align:center;">110%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">5,000,001 ~ 10,000,000</td><td style="border:1px solid #333; text-align:center;">115%</td></tr>
+<tr><td style="border:1px solid #333; text-align:center;">10,000,001 이상</td><td style="border:1px solid #333; text-align:center;">120%</td></tr>
+</tbody>
 </table>
-  </div>
+</div>
 </div>
 <script>
 
@@ -368,21 +334,21 @@ const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
 function switchTab(tabName) {
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-  document.getElementById(tabName).style.display = 'block';
-  document.querySelectorAll('.tab').forEach(tab => {
-    if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) tab.classList.add('active');
-  });
+document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+document.getElementById(tabName).style.display = 'block';
+document.querySelectorAll('.tab').forEach(tab => {
+if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) tab.classList.add('active');
+});
 
-  // 멀티 탭에서도 Steady 기본 선택
-  if (tabName === 'compare') {
-    document.querySelector('#compare .mode-selector input[value="steady"]').checked = true;
-  }
+// 멀티 탭에서도 Steady 기본 선택
+if (tabName === 'compare') {
+document.querySelector('#compare .mode-selector input[value="steady"]').checked = true;
+}
 }
 
 function showError(msg) {
-  document.getElementById('errorMsg').textContent = msg;
+document.getElementById('errorMsg').textContent = msg;
 }
 
 // function extractChannelId(url) {
@@ -396,422 +362,73 @@ function showError(msg) {
 
 // @handle → channel ID 변환
 async function convertHandleToChannelId(handle, apiKey) {
-  const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(
-    "@" + handle
-  )}&key=${API_KEY}`;
+const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(
+   "@" + handle
+ )}&key=${API_KEY}`;
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+try {
+const response = await fetch(apiUrl);
+const data = await response.json();
 
-    if (data.items && data.items.length > 0) {
-      return data.items[0].id.channelId;
-    } else {
-      
-      console.error("Handle에 해당하는 채널을 찾을 수 없습니다.");
-      return null;
-    }
-  } catch (error) {
-    console.error("API 요청 실패:", error);
-    return null;
-  }
+if (data.items && data.items.length > 0) {
+return data.items[0].id.channelId;
+} else {
+
+console.error("Handle에 해당하는 채널을 찾을 수 없습니다.");
+return null;
+}
+} catch (error) {
+console.error("API 요청 실패:", error);
+return null;
+}
 }
 
 // /user/username → channel ID 변환
 async function convertUsernameToChannelId(username, apiKey) {
-  const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=${username}&key=${API_KEY}`;
+const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=${username}&key=${API_KEY}`;
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+try {
+const response = await fetch(apiUrl);
+const data = await response.json();
 
-    if (data.items && data.items.length > 0) {
-      return data.items[0].id;
-    } else {
-      console.error("Username에 해당하는 채널을 찾을 수 없습니다.");
-      return null;
-    }
-  } catch (error) {
-    console.error("API 요청 실패:", error);
-    return null;
-  }
+if (data.items && data.items.length > 0) {
+return data.items[0].id;
+} else {
+console.error("Username에 해당하는 채널을 찾을 수 없습니다.");
+return null;
+}
+} catch (error) {
+console.error("API 요청 실패:", error);
+return null;
+}
 }
 
 async function extractChannelId(url) {
-  let channelId = null;
-  const channelIdRegex = /\/channel\/([a-zA-Z0-9_-]+)/;
-  const userRegex = /\/user\/([a-zA-Z0-9_-]+)/;
-  const handleRegex = /\/@([a-zA-Z0-9_-]+)/;
+let channelId = null;
+const channelIdRegex = /\/channel\/([a-zA-Z0-9_-]+)/;
+const userRegex = /\/user\/([a-zA-Z0-9_-]+)/;
+const handleRegex = /\/@([a-zA-Z0-9_-]+)/;
 
-  if (channelIdRegex.test(url)) {
-    channelId = url.match(channelIdRegex)[1];
-  } else if (userRegex.test(url)) {
-    const username = url.match(userRegex)[1];
-    channelId = await convertUsernameToChannelId(username, API_KEY);
-  } else if (handleRegex.test(url)) {
-    const handle = url.match(handleRegex)[1];
-    channelId = await convertHandleToChannelId(handle, API_KEY);
-  }
-  return channelId;
+if (channelIdRegex.test(url)) {
+channelId = url.match(channelIdRegex)[1];
+} else if (userRegex.test(url)) {
+const username = url.match(userRegex)[1];
+channelId = await convertUsernameToChannelId(username, API_KEY);
+} else if (handleRegex.test(url)) {
+const handle = url.match(handleRegex)[1];
+channelId = await convertHandleToChannelId(handle, API_KEY);
+}
+return channelId;
 }
 
 // 4.10 추가분 끝
 
 
 function getModeWeights() {
-  const mode = document.querySelector('input[name="mode"]:checked').value;
-  return mode === 'trendy' ? { e: 0.6, v: 0.3, u: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
+const mode = document.querySelector('input[name="mode"]:checked').value;
+return mode === 'trendy' ? { e: 0.6, v: 0.3, u: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
 }
 
-function renderCard(d, P, commentCount, analyzedVideoCount) {
-  const totalViews = parseInt(d.views.replace(/,/g, ''));
-  const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
-  const equation = generateEquation(d.E, d.V, d.U, P);
-
-  return `
-    <div class="result-card">
-      <div class="channel-info">
-        <img src="${d.thumbnail}" />
-        <div class="channel-details">
-          <strong>${d.name}</strong>
-          <ul>
-            <li>구독자 수: ${d.subs}</li>
-            <li>채널 개설일: ${d.created}</li>
-            <li>총 업로드: ${d.uploadsTotal}</li>
-            <li>전체 조회수: ${d.totalViews}</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="metric">
-  <span class="label vibe-label">VIBE Index:</span> 
-  <span class="value vibe-index">${finalVibe}<small> Point</small></span>
-</div>
-      <div class="equation">${equation}</div>
-
-      <div class="metric">
-        <span class="label">E (engagement rate):</span> 
-        <span class="value">${d.E}%</span>
-        <div class="sub-details">
-          - 좋아요: ${d.likes}<br/>
-          - 댓글 수: ${d.comments}<br/>
-          - 조회수: ${d.views}
-        </div>
-      </div>
-
-      <div class="metric">
-        <span class="label">V (viewership consistency):</span> 
-        <span class="value">${d.V}</span>
-        <div class="sub-details">
-          - 평균 조회수: ${d.avgViews}<br/>
-          - 표준편차: ${d.stdViews}
-        </div>
-      </div>
-
-      <div class="metric">
-        <span class="label">U (upload frequency):</span> 
-        <span class="value">${d.U}%</span>
-        <div class="sub-details">
-          - 최근 60일 업로드 수: ${d.videoCount60days}개
-        </div>
-      </div>
-
-      ${P ? `
-        <div class="metric">
-  <span class="label">P (Positive Comment Rate):</span> 
-  <span class="value">${P}%</span>
-  <div class="sub-details">
-    - 분석 댓글 수: ${commentCount > 0 ? commentCount + '개' : '댓글 비공개'}<br/>
-    - 분석 영상 수: ${analyzedVideoCount > 0 ? analyzedVideoCount + '개' : '댓글 비공개'}
-  </div>
-</div>
-        </div>` : ''}
-    </div>`;
-}
-
-async function analyzeSingleChannel() {
-  const url = document.getElementById('singleChannelUrl').value;
-  const id = await extractChannelId(url);
-  if (!id) return showError('채널 ID를 찾을 수 없습니다.');
-
-  const d = await fetchChannelData(id);
-
-  let P = null;
-  let commentCount = 0;
-  let analyzedVideoCount = 0;
-
-  const recentVideos = await fetchRecentVideos(id, 50);
-
-  let comments = [];
-  analyzedVideoCount = 0;
-  for (let videoId of recentVideos) {
-    if (comments.length >= 100) break;
-
-    const prevCommentCount = comments.length;
-    comments = await fetchComments(videoId, comments, 100 - comments.length);
-
-    if (comments.length > prevCommentCount) {
-      analyzedVideoCount++;
-    }
-  }
-  commentCount = comments.length;
-
-  if (commentCount > 0) {
-    P = await analyzeSentiment(comments);
-  } else {
-    P = 0; // 🔴 댓글이 없거나 비공개일 때 P값 명확히 0점 처리
-  }
-
-  document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount, analyzedVideoCount);
-
-  const videoTableHTML = renderVideoTable(d.videos);
-  document.getElementById('videoTable').innerHTML = videoTableHTML;
-
-  document.getElementById('videoTable').scrollIntoView({ behavior: 'smooth' });
-}
-
-
-async function compareChannels() {
-  const urls = [
-    document.getElementById('channelUrl1').value,
-    document.getElementById('channelUrl2').value,
-    document.getElementById('channelUrl3').value
-  ].filter(Boolean);
-
-  const result = document.getElementById('compareResult');
-  result.innerHTML = '';
-
-  for (const url of urls) {
-    const id = await extractChannelId(url);
-    if (!id) {
-      showError(`채널 ID를 찾을 수 없습니다: ${url}`);
-      continue;
-    }
-
-    const d = await fetchChannelData(id);
-
-let P = null;
-let commentCount = 0;
-let analyzedVideoCount = 0;
-
-const recentVideos = await fetchRecentVideos(id, 50);
-
-let comments = [];
-analyzedVideoCount = 0;
-
-for (let videoId of recentVideos) {
-  if (comments.length >= 100) break;
-
-  const prevCommentCount = comments.length;
-  comments = await fetchComments(videoId, comments, 100 - comments.length);
-
-  if (comments.length > prevCommentCount) analyzedVideoCount++;
-}
-
-commentCount = comments.length;
-
-if (commentCount > 0) {
-  P = await analyzeSentiment(comments);
-} else {
-  P = 0;  // 🔴 명확히 0점으로 처리 (비공개일 때)
-}
-
-
-    result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
-  }
-}
-
-// Steady VIBE 기본 선택 표시 (시각적으로도)
-window.onload = function () {
-  document.querySelector('input[name="mode"][value="steady"]').checked = true;
-};
-
-//
-function calculateVIBE(E, V, U, P, totalViews) {
-  const mode = document.querySelector('input[name="mode"]:checked').value;
-  const E_benchmark = 7;
-  const V_benchmark = 0.9;
-
-  const E_normalized = (E / E_benchmark) * 100;
-  const V_normalized = (V / V_benchmark) * 100;
-
-  let weights;
-  if (mode === 'steady') {
-    weights = { e: 0.40, v: 0.40, u: 0.075, p: 0.125 };
-  } else {
-    weights = { e: 0.50, v: 0.30, u: 0.075, p: 0.125 };
-  }
-
-  let vibeIndex = (E_normalized * weights.e) 
-                + (V_normalized * weights.v) 
-                + (U * weights.u) 
-                + (P * weights.p);
-
-  const viewWeight = getViewCountWeight(totalViews);
-  vibeIndex *= viewWeight;
-
-  return vibeIndex.toFixed(1);
-}
-
-// 총 조회수 기반 가중치 계산 함수 (calculateVIBE 바로 위 또는 아래에 추가)
-function getViewCountWeight(totalViews) {
-  if (totalViews <= 1000) return 0.7;           // 70%
-  else if (totalViews <= 10000) return 0.8;     // 80%
-  else if (totalViews <= 100000) return 0.9;    // 90%
-  else if (totalViews <= 500000) return 1.0;    // 100%
-  else if (totalViews <= 1000000) return 1.05;  // 105%
-  else if (totalViews <= 5000000) return 1.1;   // 110%
-  else if (totalViews <= 10000000) return 1.15; // 115%
-  else return 1.2;                              // 120%
-}
-
-
-function generateEquation(E, V, U, P) {
-  return `= E(${E}%) + V(${V}) + U(${U}%) + P(${P}%)`;
-}
-
-// 🚩 추가될 3가지 함수들
-async function fetchRecentVideos(channelId, maxVideos = 50) {
-  let videos = [];
-  let nextPageToken = "";
-  do {
-    const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=${Math.min(50, maxVideos - videos.length)}&pageToken=${nextPageToken}`);
-    const data = await res.json();
-    videos.push(...data.items.map(item => item.id.videoId));
-    nextPageToken = data.nextPageToken || "";
-  } while (nextPageToken && videos.length < maxVideos);
-
-  return videos;
-}
-
-async function fetchComments(videoId, collectedComments, maxComments) {
-  try {
-    const res = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY}`);
-    const data = await res.json();
-
-    if (!data.items) {
-      console.warn("댓글 접근 제한으로 인해 댓글 데이터를 가져올 수 없습니다. Video ID:", videoId);
-      return collectedComments;
-    }
-
-    return collectedComments.concat(data.items.map(item => item.snippet.topLevelComment.snippet.textOriginal));
-  } catch (error) {
-    console.error("댓글 API 호출 실패:", error);
-    return collectedComments; // 기존 댓글만 반환
-  }
-}
-
-const NLP_API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";  // NLP용 API키 입력
-
-async function analyzeSentiment(comments) {
-  const doc = comments.join(". ");
-  const res = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${NLP_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ document: { type: "PLAIN_TEXT", content: doc }, encodingType: "UTF8" })
-  });
-  const sentimentData = await res.json();
-  const positiveComments = sentimentData.sentences.filter(s => s.sentiment.score >= 0).length;
-  return ((positiveComments / sentimentData.sentences.length) * 100).toFixed(1);
-}
-function toggleVibeInfo() {
-  const vibeInfo = document.getElementById('vibeInfo');
-  vibeInfo.style.display = (vibeInfo.style.display === 'none' || vibeInfo.style.display === '') ? 'block' : 'none';
-}  
-  async function downloadFullExcel() {
-  const url = document.getElementById('singleChannelUrl').value;
-  const id = await extractChannelId(url);
-  if (!id) {
-    alert("채널 ID를 찾을 수 없습니다.");
-    return;
-  }
-
-  const d = await fetchChannelData(id);
-  let P = null;
-  let commentCount = 0;
-  let analyzedVideoCount = 0;
-
-  const recentVideos = await fetchRecentVideos(id, 50);
-  let comments = [];
-  analyzedVideoCount = 0;
-
-  for (let videoId of recentVideos) {
-    if (comments.length >= 100) break;
-
-    const prevCommentCount = comments.length;
-    comments = await fetchComments(videoId, comments, 100 - comments.length);
-    if (comments.length > prevCommentCount) analyzedVideoCount++;
-  }
-
-  commentCount = comments.length;
-  if (commentCount > 0) {
-    P = await analyzeSentiment(comments);
-  }
-
-  const wb = XLSX.utils.book_new();
-
-  const channelInfo = [
-    ["채널명", d.name],
-    ["구독자 수", d.subs],
-    ["채널 개설일", d.created],
-    ["총 업로드 수", d.uploadsTotal],
-    ["전체 조회수", d.totalViews],
-    ["데이터 수집일", new Date().toLocaleDateString()]
-  ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(channelInfo), "채널 기본 정보");
-
-  const metrics = [
-    ["지표", "값"],
-    ["VIBE Index", calculateVIBE(d.E, d.V, d.U, P, parseInt(d.views.replace(/,/g, '')))],
-    ["E (참여율 %)", d.E],
-    ["좋아요 수", d.likes],
-    ["댓글 수", d.comments],
-    ["조회수", d.views],
-    ["V (조회수 일관성)", d.V],
-    ["평균 조회수", d.avgViews],
-    ["조회수 표준편차", d.stdViews],
-    ["U (업로드 빈도 %)", d.U],
-    ["최근 60일 업로드 수", d.videoCount60days],
-    ["P (긍정 댓글 비율 %)", P ? P : "N/A"],
-    ["댓글 분석 대상 수", commentCount],
-    ["댓글 분석 영상 수", analyzedVideoCount]
-  ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metrics), "세부 지표");
-
-  const videoData = d.videos.map(v => [
-    v.snippet.title,
-    v.snippet.publishedAt.slice(0, 10),
-    (+v.statistics.viewCount || 0),
-    (+v.statistics.likeCount || 0),
-    (+v.statistics.commentCount || 0)
-  ]);
-  videoData.unshift(["제목", "업로드 날짜", "조회수", "좋아요 수", "댓글 수"]);
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(videoData), "최근 영상 50개");
-
-  XLSX.writeFile(wb, `${d.name}_full_analysis_${new Date().toISOString().slice(0,10)}.xlsx`);
-}
-
-// PDF 다운로드 함수 추가
-function downloadPDF() {
-  const element = document.body;
-  const opt = {
-    margin: 0.5,
-    filename: `YouTube_VIBE_Index_${new Date().toISOString().slice(0,10)}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(element).save();
-}
-  // 영상 수 보정 함수 (중복 제거, 최종 버전)
-function adjustV(V, videoCount) {
-  if (videoCount <= 1) return 0;
-  if (videoCount >= 10) return V;
-  return +(V * (videoCount / 10)).toFixed(2);
-}
-
-// 채널 데이터 불러오기 (중복 제거된 최종 버전)
-async function fetchChannelData(channelId) {
   const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
   const chData = await chRes.json();
   const ch = chData.items[0];
@@ -871,52 +488,460 @@ async function fetchChannelData(channelId) {
 }
 
 
+function renderCard(d, P, commentCount, analyzedVideoCount) {
+const totalViews = parseInt(d.views.replace(/,/g, ''));
+const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
+const equation = generateEquation(d.E, d.V, d.U, P);
+
+return `
+   <div class="result-card">
+     <div class="channel-info">
+       <img src="${d.thumbnail}" />
+       <div class="channel-details">
+         <strong>${d.name}</strong>
+         <ul>
+           <li>구독자 수: ${d.subs}</li>
+           <li>채널 개설일: ${d.created}</li>
+           <li>총 업로드: ${d.uploadsTotal}</li>
+           <li>전체 조회수: ${d.totalViews}</li>
+         </ul>
+       </div>
+     </div>
+
+     <div class="metric">
+ <span class="label vibe-label">VIBE Index:</span> 
+ <span class="value vibe-index">${finalVibe}<small> Point</small></span>
+</div>
+     <div class="equation">${equation}</div>
+
+     <div class="metric">
+       <span class="label">E (engagement rate):</span> 
+       <span class="value">${d.E}%</span>
+       <div class="sub-details">
+         - 좋아요: ${d.likes}<br/>
+         - 댓글 수: ${d.comments}<br/>
+         - 조회수: ${d.views}
+       </div>
+     </div>
+
+     <div class="metric">
+       <span class="label">V (viewership consistency):</span> 
+       <span class="value">${d.V}</span>
+       <div class="sub-details">
+         - 평균 조회수: ${d.avgViews}<br/>
+         - 표준편차: ${d.stdViews}
+       </div>
+     </div>
+
+     <div class="metric">
+       <span class="label">U (upload frequency):</span> 
+       <span class="value">${d.U}%</span>
+       <div class="sub-details">
+         - 최근 60일 업로드 수: ${d.videoCount60days}개
+       </div>
+     </div>
+
+     ${P ? `
+       <div class="metric">
+ <span class="label">P (Positive Comment Rate):</span> 
+ <span class="value">${P}%</span>
+ <div class="sub-details">
+   - 분석 댓글 수: ${commentCount > 0 ? commentCount + '개' : '댓글 비공개'}<br/>
+   - 분석 영상 수: ${analyzedVideoCount > 0 ? analyzedVideoCount + '개' : '댓글 비공개'}
+ </div>
+</div>
+       </div>` : ''}
+   </div>`;
+}
+
+async function analyzeSingleChannel() {
+const url = document.getElementById('singleChannelUrl').value;
+const id = await extractChannelId(url);
+if (!id) return showError('채널 ID를 찾을 수 없습니다.');
+
+const d = await fetchChannelData(id);
+
+let P = null;
+let commentCount = 0;
+let analyzedVideoCount = 0;
+
+const recentVideos = await fetchRecentVideos(id, 50);
+
+let comments = [];
+analyzedVideoCount = 0;
+for (let videoId of recentVideos) {
+if (comments.length >= 100) break;
+
+const prevCommentCount = comments.length;
+comments = await fetchComments(videoId, comments, 100 - comments.length);
+
+if (comments.length > prevCommentCount) {
+analyzedVideoCount++;
+}
+}
+commentCount = comments.length;
+
+if (commentCount > 0) {
+P = await analyzeSentiment(comments);
+} else {
+P = 0; // 🔴 댓글이 없거나 비공개일 때 P값 명확히 0점 처리
+}
+
+document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCount, analyzedVideoCount);
+
+const videoTableHTML = renderVideoTable(d.videos);
+document.getElementById('videoTable').innerHTML = videoTableHTML;
+
+document.getElementById('videoTable').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+async function compareChannels() {
+const urls = [
+document.getElementById('channelUrl1').value,
+document.getElementById('channelUrl2').value,
+document.getElementById('channelUrl3').value
+].filter(Boolean);
+
+const result = document.getElementById('compareResult');
+result.innerHTML = '';
+
+for (const url of urls) {
+const id = await extractChannelId(url);
+if (!id) {
+showError(`채널 ID를 찾을 수 없습니다: ${url}`);
+continue;
+}
+
+const d = await fetchChannelData(id);
+
+let P = null;
+let commentCount = 0;
+let analyzedVideoCount = 0;
+
+const recentVideos = await fetchRecentVideos(id, 50);
+
+let comments = [];
+analyzedVideoCount = 0;
+
+for (let videoId of recentVideos) {
+if (comments.length >= 100) break;
+
+const prevCommentCount = comments.length;
+comments = await fetchComments(videoId, comments, 100 - comments.length);
+
+if (comments.length > prevCommentCount) analyzedVideoCount++;
+}
+
+commentCount = comments.length;
+
+if (commentCount > 0) {
+P = await analyzeSentiment(comments);
+} else {
+P = 0;  // 🔴 명확히 0점으로 처리 (비공개일 때)
+}
+
+
+result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
+}
+}
+
+// Steady VIBE 기본 선택 표시 (시각적으로도)
+window.onload = function () {
+document.querySelector('input[name="mode"][value="steady"]').checked = true;
+};
+
+//
+function calculateVIBE(E, V, U, P, totalViews) {
+const mode = document.querySelector('input[name="mode"]:checked').value;
+const E_benchmark = 7;
+const V_benchmark = 0.9;
+
+const E_normalized = (E / E_benchmark) * 100;
+const V_normalized = (V / V_benchmark) * 100;
+
+let weights;
+if (mode === 'steady') {
+weights = { e: 0.40, v: 0.40, u: 0.075, p: 0.125 };
+} else {
+weights = { e: 0.50, v: 0.30, u: 0.075, p: 0.125 };
+}
+
+let vibeIndex = (E_normalized * weights.e) 
++ (V_normalized * weights.v) 
++ (U * weights.u) 
++ (P * weights.p);
+
+const viewWeight = getViewCountWeight(totalViews);
+vibeIndex *= viewWeight;
+
+return vibeIndex.toFixed(1);
+}
+
+// 총 조회수 기반 가중치 계산 함수 (calculateVIBE 바로 위 또는 아래에 추가)
+function getViewCountWeight(totalViews) {
+if (totalViews <= 1000) return 0.7;           // 70%
+else if (totalViews <= 10000) return 0.8;     // 80%
+else if (totalViews <= 100000) return 0.9;    // 90%
+else if (totalViews <= 500000) return 1.0;    // 100%
+else if (totalViews <= 1000000) return 1.05;  // 105%
+else if (totalViews <= 5000000) return 1.1;   // 110%
+else if (totalViews <= 10000000) return 1.15; // 115%
+else return 1.2;                              // 120%
+}
+
+
+function generateEquation(E, V, U, P) {
+return `= E(${E}%) + V(${V}) + U(${U}%) + P(${P}%)`;
+}
+
+// 🚩 추가될 3가지 함수들
+async function fetchRecentVideos(channelId, maxVideos = 50) {
+let videos = [];
+let nextPageToken = "";
+do {
+const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=${Math.min(50, maxVideos - videos.length)}&pageToken=${nextPageToken}`);
+const data = await res.json();
+videos.push(...data.items.map(item => item.id.videoId));
+nextPageToken = data.nextPageToken || "";
+} while (nextPageToken && videos.length < maxVideos);
+
+return videos;
+}
+
+async function fetchComments(videoId, collectedComments, maxComments) {
+try {
+const res = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY}`);
+const data = await res.json();
+
+if (!data.items) {
+console.warn("댓글 접근 제한으로 인해 댓글 데이터를 가져올 수 없습니다. Video ID:", videoId);
+return collectedComments;
+}
+
+return collectedComments.concat(data.items.map(item => item.snippet.topLevelComment.snippet.textOriginal));
+} catch (error) {
+console.error("댓글 API 호출 실패:", error);
+return collectedComments; // 기존 댓글만 반환
+}
+}
+
+const NLP_API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";  // NLP용 API키 입력
+
+async function analyzeSentiment(comments) {
+const doc = comments.join(". ");
+const res = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${NLP_API_KEY}`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ document: { type: "PLAIN_TEXT", content: doc }, encodingType: "UTF8" })
+});
+const sentimentData = await res.json();
+const positiveComments = sentimentData.sentences.filter(s => s.sentiment.score >= 0).length;
+return ((positiveComments / sentimentData.sentences.length) * 100).toFixed(1);
+}
+function toggleVibeInfo() {
+const vibeInfo = document.getElementById('vibeInfo');
+vibeInfo.style.display = (vibeInfo.style.display === 'none' || vibeInfo.style.display === '') ? 'block' : 'none';
+}  
+async function downloadFullExcel() {
+const url = document.getElementById('singleChannelUrl').value;
+const id = await extractChannelId(url);
+if (!id) {
+alert("채널 ID를 찾을 수 없습니다.");
+return;
+}
+
+const d = await fetchChannelData(id);
+let P = null;
+let commentCount = 0;
+let analyzedVideoCount = 0;
+
+const recentVideos = await fetchRecentVideos(id, 50);
+let comments = [];
+analyzedVideoCount = 0;
+
+for (let videoId of recentVideos) {
+if (comments.length >= 100) break;
+
+const prevCommentCount = comments.length;
+comments = await fetchComments(videoId, comments, 100 - comments.length);
+if (comments.length > prevCommentCount) analyzedVideoCount++;
+}
+
+commentCount = comments.length;
+if (commentCount > 0) {
+P = await analyzeSentiment(comments);
+}
+
+const wb = XLSX.utils.book_new();
+
+const channelInfo = [
+["채널명", d.name],
+["구독자 수", d.subs],
+["채널 개설일", d.created],
+["총 업로드 수", d.uploadsTotal],
+["전체 조회수", d.totalViews],
+["데이터 수집일", new Date().toLocaleDateString()]
+];
+XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(channelInfo), "채널 기본 정보");
+
+const metrics = [
+["지표", "값"],
+["VIBE Index", calculateVIBE(d.E, d.V, d.U, P, parseInt(d.views.replace(/,/g, '')))],
+["E (참여율 %)", d.E],
+["좋아요 수", d.likes],
+["댓글 수", d.comments],
+["조회수", d.views],
+["V (조회수 일관성)", d.V],
+["평균 조회수", d.avgViews],
+["조회수 표준편차", d.stdViews],
+["U (업로드 빈도 %)", d.U],
+["최근 60일 업로드 수", d.videoCount60days],
+["P (긍정 댓글 비율 %)", P ? P : "N/A"],
+["댓글 분석 대상 수", commentCount],
+["댓글 분석 영상 수", analyzedVideoCount]
+];
+XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metrics), "세부 지표");
+
+const videoData = d.videos.map(v => [
+v.snippet.title,
+v.snippet.publishedAt.slice(0, 10),
+(+v.statistics.viewCount || 0),
+(+v.statistics.likeCount || 0),
+(+v.statistics.commentCount || 0)
+]);
+videoData.unshift(["제목", "업로드 날짜", "조회수", "좋아요 수", "댓글 수"]);
+XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(videoData), "최근 영상 50개");
+
+XLSX.writeFile(wb, `${d.name}_full_analysis_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// PDF 다운로드 함수 추가
+function downloadPDF() {
+const element = document.body;
+const opt = {
+margin: 0.5,
+filename: `YouTube_VIBE_Index_${new Date().toISOString().slice(0,10)}.pdf`,
+image: { type: 'jpeg', quality: 0.98 },
+html2canvas: { scale: 2, useCORS: true },
+jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+};
+html2pdf().set(opt).from(element).save();
+}
+// 영상 수 보정 함수 (중복 제거, 최종 버전)
+function adjustV(V, videoCount) {
+if (videoCount <= 1) return 0;
+if (videoCount >= 10) return V;
+return +(V * (videoCount / 10)).toFixed(2);
+}
+
+// 채널 데이터 불러오기 (중복 제거된 최종 버전)
+async function fetchChannelData(channelId) {
+const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
+const chData = await chRes.json();
+const ch = chData.items[0];
+
+let nextPageToken = "";
+let allVideos = [];
+do {
+const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
+const json = await res.json();
+allVideos.push(...json.items);
+nextPageToken = json.nextPageToken || "";
+} while (nextPageToken && allVideos.length < 150);
+
+const videoIds = allVideos.map(v => v.id.videoId).filter(Boolean);
+const stats = [];
+for (let i = 0; i < videoIds.length; i += 50) {
+const batch = videoIds.slice(i, i + 50).join(",");
+const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY}`);
+const json = await res.json();
+stats.push(...json.items);
+}
+
+const views = stats.map(v => +v.statistics.viewCount || 0);
+const likes = stats.map(v => +v.statistics.likeCount || 0);
+const comments = stats.map(v => +v.statistics.commentCount || 0);
+const sum = arr => arr.reduce((a,b)=>a+b,0);
+const avg = views.length ? sum(views) / views.length : 0;
+const std = Math.sqrt(views.map(v => (v - avg) ** 2).reduce((a,b)=>a+b,0) / views.length);
+const E = ((sum(likes) + sum(comments)) / sum(views)) * 100;
+
+let V = Math.max(1 - (std / avg), 0);
+V = adjustV(V, views.length);  // 🚨 V지표 보정 함수 명확히 적용됨
+
+const U = stats.length >= 60 ? 100 : (stats.length / 60) * 100;
+const w = getModeWeights();
+const VIBE = E * w.e + V * 100 * w.v + U * w.u;
+
+return {
+name: ch.snippet.title,
+thumbnail: ch.snippet.thumbnails.default.url,
+subs: Number(ch.statistics.subscriberCount).toLocaleString() + '명',
+created: ch.snippet.publishedAt.split('T')[0],
+uploadsTotal: Number(ch.statistics.videoCount).toLocaleString() + '개',
+totalViews: Number(ch.statistics.viewCount).toLocaleString(),
+likes: sum(likes).toLocaleString(),
+comments: sum(comments).toLocaleString(),
+views: sum(views).toLocaleString(),
+avgViews: Math.round(avg).toLocaleString(),
+stdViews: Math.round(std).toLocaleString(),
+E: E.toFixed(1),
+V: V.toFixed(2),
+U: U.toFixed(1),
+VIBE: VIBE.toFixed(1),
+videos: stats,
+videoCount60days: stats.length
+};
+}
+
+
 function renderVideoTable(videos) {
-  let tableHtml = `
-    <table>
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>영상 제목</th>
-          <th>업로드 날짜</th>
-          <th>조회수</th>
-          <th>좋아요 수</th>
-          <th>댓글 수</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
+let tableHtml = `
+   <table>
+     <thead>
+       <tr>
+         <th>No.</th>
+         <th>영상 제목</th>
+         <th>업로드 날짜</th>
+         <th>조회수</th>
+         <th>좋아요 수</th>
+         <th>댓글 수</th>
+       </tr>
+     </thead>
+     <tbody>
+ `;
 
-  videos.forEach((video, idx) => {
-    const title = video.snippet.title;
-    const date = video.snippet.publishedAt.slice(0, 10);
-    const views = (+video.statistics.viewCount || 0).toLocaleString();
-    const likes = (+video.statistics.likeCount || 0).toLocaleString();
-    const comments = (+video.statistics.commentCount || 0).toLocaleString();
+videos.forEach((video, idx) => {
+const title = video.snippet.title;
+const date = video.snippet.publishedAt.slice(0, 10);
+const views = (+video.statistics.viewCount || 0).toLocaleString();
+const likes = (+video.statistics.likeCount || 0).toLocaleString();
+const comments = (+video.statistics.commentCount || 0).toLocaleString();
 
-    tableHtml += `
-      <tr>
-        <td>${idx + 1}</td>
-        <td style="text-align: left; padding-left: 10px;">${title}</td>
-        <td>${date}</td>
-        <td>${views}</td>
-        <td>${likes}</td>
-        <td>${comments}</td>
-      </tr>
-    `;
-  });
+tableHtml += `
+     <tr>
+       <td>${idx + 1}</td>
+       <td style="text-align: left; padding-left: 10px;">${title}</td>
+       <td>${date}</td>
+       <td>${views}</td>
+       <td>${likes}</td>
+       <td>${comments}</td>
+     </tr>
+   `;
+});
 
-  tableHtml += '</tbody></table>';
+tableHtml += '</tbody></table>';
 
-  return tableHtml;
+return tableHtml;
 }
 
 </script>
 <footer style="padding: 10px 0; border-top: 1px solid #333; font-size: 0.8rem; color: #888; position: fixed; bottom: 0; left: 0; width: 100%; background-color: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;">
-  <img src="https://github.com/dookie777/vibe-index/blob/main/Logo_white.png?raw=true"
-       alt="The Eroom Sports Logo"
-       style="width: 100px; height: auto; margin-bottom: 5px;">
-  <div>© 2025 The Eroom Sports. All rights reserved.</div>
+<img src="https://github.com/dookie777/vibe-index/blob/main/Logo_white.png?raw=true"
+alt="The Eroom Sports Logo"
+style="width: 100px; height: auto; margin-bottom: 5px;">
+<div>© 2025 The Eroom Sports. All rights reserved.</div>
 </footer>
 </body>
 </html>
