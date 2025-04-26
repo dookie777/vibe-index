@@ -340,47 +340,44 @@ border-radius: 8px !important; /* 모서리 둥글게 */
       <div class="title">YouTube VIBE Index Analyzer</div>
     </div>
 
-    <div class="sticky-top-controls">
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab('single')">Single Channel</div>
-        <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
-      </div>
+<div class="sticky-top-controls">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('single')">Single Channel</div>
+    <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
+  </div>
 
-      <div id="single" class="tab-content">
-        <div class="input-area">
-          <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
-          <button onclick="analyzeSingleChannel()">Analysis</button>
-        </div>
-
-        <div class="mode-selector">
-          <label><input type="radio" name="mode-single" value="steady" checked> Steady VIBE</label>
-          <label><input type="radio" name="mode-single" value="trendy"> Trendy VIBE</label>
-        </div>
-      </div>
+  <!-- ✅ Single tab-content -->
+  <div id="single" class="tab-content">
+    <div class="input-area">
+      <input type="text" id="singleChannelUrl" placeholder="채널 URL 입력" />
+      <button onclick="analyzeSingleChannel()">Analysis</button>
     </div>
-  </div> <!-- ✅ sticky-header 끝 -->
+    <div class="mode-selector">
+      <label><input type="radio" name="mode-single" value="steady" checked> Steady VIBE</label>
+      <label><input type="radio" name="mode-single" value="trendy"> Trendy VIBE</label>
+    </div>
+  </div>
+
+  <!-- ✅ Compare tab-content (이걸 여기로 옮겨야 함!) -->
+  <div id="compare" class="tab-content" style="display: none;">
+    <div class="input-area">
+      <input type="text" id="channelUrl1" placeholder="채널 URL 1" />
+      <input type="text" id="channelUrl2" placeholder="채널 URL 2" />
+      <input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
+      <button onclick="compareChannels()">Compare</button>
+    </div>
+    <div class="mode-selector">
+      <label><input type="radio" name="mode-compare" value="steady" checked> Steady VIBE</label>
+      <label><input type="radio" name="mode-compare" value="trendy"> Trendy VIBE</label>
+    </div>
+  </div>
+</div>
 
   <!-- ✅ 이 아래만 스크롤 되게 -->
 <div class="scroll-area">
     <div style="height: 0px;"></div>  <!-- ✅ 이 줄 추가: 스크롤 시작 위치 보정 -->
   <div id="singleResult"></div>
   <div id="videoTable"></div>
-</div>
-
-
-<div id="compare" class="tab-content" style="display: none;">
-<div class="input-area">
-<div class="multi-input-container">
-<input type="text" id="channelUrl1" placeholder="채널 URL 1" />
-<input type="text" id="channelUrl2" placeholder="채널 URL 2" />
-<input type="text" id="channelUrl3" placeholder="채널 URL 3 (선택)" />
-<button onclick="compareChannels()">Compare</button>
-</div>
-</div>
-
-<div class="mode-selector">
-<label><input type="radio" name="mode-compare" value="steady" checked> Steady VIBE</label>
-<label><input type="radio" name="mode-compare" value="trendy"> Trendy VIBE</label>
 </div>
 
 
@@ -518,9 +515,9 @@ document.getElementById('errorMsg').textContent = msg;
 
 // @handle → channel ID 변환
 async function convertHandleToChannelId(handle, apiKey) {
-const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(
+const apiUrl = https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(
    "@" + handle
- )}&key=${API_KEY}`;
+ )}&key=${API_KEY};
 
 try {
 const response = await fetch(apiUrl);
@@ -541,7 +538,7 @@ return null;
 
 // /user/username → channel ID 변환
 async function convertUsernameToChannelId(username, apiKey) {
-const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=${username}&key=${API_KEY}`;
+const apiUrl = https://www.googleapis.com/youtube/v3/channels?part=id&forUsername=${username}&key=${API_KEY};
 
 try {
 const response = await fetch(apiUrl);
@@ -596,7 +593,7 @@ const totalViews = parseInt(d.views.replace(/,/g, ''));
 const finalVibe = calculateVIBE(d.E, d.V, d.U, P, totalViews);
 const equation = generateEquation(d.E, d.V, d.U, P);
 
-return `
+return 
    <div class="result-card">
      <div class="channel-info">
        <img src="${d.thumbnail}" />
@@ -644,7 +641,7 @@ return `
        </div>
      </div>
 
-     ${P ? `
+     ${P ? 
        <div class="metric">
  <span class="label">P (Positive Comment Rate):</span> 
  <span class="value">${P}%</span>
@@ -653,8 +650,8 @@ return `
    - 분석 영상 수: ${analyzedVideoCount > 0 ? analyzedVideoCount + '개' : '댓글 비공개'}
  </div>
 </div>
-       </div>` : ''}
-   </div>`;
+       </div> : ''}
+   </div>;
 }
 
 async function analyzeSingleChannel() {
@@ -712,7 +709,7 @@ result.innerHTML = '';
 for (const url of urls) {
 const id = await extractChannelId(url);
 if (!id) {
-showError(`채널 ID를 찾을 수 없습니다: ${url}`);
+showError(채널 ID를 찾을 수 없습니다: ${url});
 continue;
 }
 
@@ -808,7 +805,7 @@ else return 1.2;                              // 120%
 
 
 function generateEquation(E, V, U, P) {
-return `= E(${E}%) + V(${V}) + U(${U}%) + P(${P}%)`;
+return = E(${E}%) + V(${V}) + U(${U}%) + P(${P}%);
 }
 
 // 🚩 추가될 3가지 함수들
@@ -816,7 +813,7 @@ async function fetchRecentVideos(channelId, maxVideos = 50) {
 let videos = [];
 let nextPageToken = "";
 do {
-const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=${Math.min(50, maxVideos - videos.length)}&pageToken=${nextPageToken}`);
+const res = await fetch(https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=id&type=video&order=date&maxResults=${Math.min(50, maxVideos - videos.length)}&pageToken=${nextPageToken});
 const data = await res.json();
 videos.push(...data.items.map(item => item.id.videoId));
 nextPageToken = data.nextPageToken || "";
@@ -827,7 +824,7 @@ return videos;
 
 async function fetchComments(videoId, collectedComments, maxComments) {
 try {
-const res = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY}`);
+const res = await fetch(https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=${Math.min(maxComments,100)}&key=${API_KEY});
 const data = await res.json();
 
 if (!data.items) {
@@ -846,7 +843,7 @@ const NLP_API_KEY = "AIzaSyB0XJ0a5lFg7foBkMCkGij0xnWM6smbbVI";  // NLP용 API키
 
 async function analyzeSentiment(comments) {
 const doc = comments.join(". ");
-const res = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${NLP_API_KEY}`, {
+const res = await fetch(https://language.googleapis.com/v1/documents:analyzeSentiment?key=${NLP_API_KEY}, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ document: { type: "PLAIN_TEXT", content: doc }, encodingType: "UTF8" })
@@ -929,7 +926,7 @@ v.snippet.publishedAt.slice(0, 10),
 videoData.unshift(["제목", "업로드 날짜", "조회수", "좋아요 수", "댓글 수"]);
 XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(videoData), "최근 영상 50개");
 
-XLSX.writeFile(wb, `${d.name}_full_analysis_${new Date().toISOString().slice(0,10)}.xlsx`);
+XLSX.writeFile(wb, ${d.name}_full_analysis_${new Date().toISOString().slice(0,10)}.xlsx);
 }
 
 // PDF 다운로드 함수 추가
@@ -937,7 +934,7 @@ function downloadPDF() {
 const element = document.body;
 const opt = {
 margin: 0.5,
-filename: `YouTube_VIBE_Index_${new Date().toISOString().slice(0,10)}.pdf`,
+filename: YouTube_VIBE_Index_${new Date().toISOString().slice(0,10)}.pdf,
 image: { type: 'jpeg', quality: 0.98 },
 html2canvas: { scale: 2, useCORS: true },
 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
@@ -953,14 +950,14 @@ return +(V * (videoCount / 10)).toFixed(2);
 
 // 채널 데이터 불러오기 (중복 제거된 최종 버전)
 async function fetchChannelData(channelId) {
-const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
+const chRes = await fetch(https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY});
 const chData = await chRes.json();
 const ch = chData.items[0];
 
 let nextPageToken = "";
 let allVideos = [];
 do {
-const res = await fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken}`);
+const res = await fetch(https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&publishedAfter=${new Date(Date.now() - 60*24*60*60*1000).toISOString()}&maxResults=50&pageToken=${nextPageToken});
 const json = await res.json();
 allVideos.push(...json.items);
 nextPageToken = json.nextPageToken || "";
@@ -970,7 +967,7 @@ const videoIds = allVideos.map(v => v.id.videoId).filter(Boolean);
 const stats = [];
 for (let i = 0; i < videoIds.length; i += 50) {
 const batch = videoIds.slice(i, i + 50).join(",");
-const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY}`);
+const res = await fetch(https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${batch}&key=${API_KEY});
 const json = await res.json();
 stats.push(...json.items);
 }
@@ -1013,7 +1010,7 @@ videoCount60days: stats.length
 
 
 function renderVideoTable(videos) {
-let tableHtml = `
+let tableHtml = 
    <table>
      <thead>
        <tr>
@@ -1026,7 +1023,7 @@ let tableHtml = `
        </tr>
      </thead>
      <tbody>
- `;
+ ;
 
 videos.forEach((video, idx) => {
 const title = video.snippet.title;
@@ -1035,7 +1032,7 @@ const views = (+video.statistics.viewCount || 0).toLocaleString();
 const likes = (+video.statistics.likeCount || 0).toLocaleString();
 const comments = (+video.statistics.commentCount || 0).toLocaleString();
 
-tableHtml += `
+tableHtml += 
      <tr>
        <td>${idx + 1}</td>
        <td style="text-align: left; padding-left: 10px;">${title}</td>
@@ -1044,7 +1041,7 @@ tableHtml += `
        <td>${likes}</td>
        <td>${comments}</td>
      </tr>
-   `;
+   ;
 });
 
 tableHtml += '</tbody></table>';
