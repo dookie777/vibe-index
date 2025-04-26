@@ -8,8 +8,14 @@
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js"></script>
 
 <style>
-body { background-color: #000000; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-.container { padding: 20px; max-width: 1200px; margin: auto; }
+body { 
+  background-color: #000000; 
+  color: #fff; 
+  font-family: Arial, sans-serif; 
+  margin: 0; 
+  padding: 0; 
+  overflow: hidden; /* ✅ 추가 */
+}.container { padding: 20px; max-width: 1200px; margin: auto; }
 h1 { font-size: 2rem; text-align: center; color: #ffa500; }
 
 .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
