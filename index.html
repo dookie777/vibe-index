@@ -274,6 +274,22 @@ border-radius: 8px !important; /* 모서리 둥글게 */
   padding: 10px 0;
   z-index: 999;
 }
+
+.scroll-area {
+  height: calc(100vh - 280px); /* ✅ 상단 고정 영역 높이만큼 빼기 (조정 가능) */
+  overflow-y: auto;
+  padding-top: 20px; /* 결과 카드와 약간 여백 */
+}
+.scroll-area::-webkit-scrollbar {
+  width: 10px;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 5px;
+}
+.scroll-area::-webkit-scrollbar-thumb:hover {
+  background: #FFA500;
+}
   
 </style>
 </head>
@@ -318,8 +334,9 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 </div>
   
   
-<div id="singleResult"></div>
-<div id="videoTable"></div>
+<div class="scroll-area">
+  <div id="singleResult"></div>
+  <div id="videoTable"></div>
 </div>
 
 <div id="compare" class="tab-content" style="display: none;">
