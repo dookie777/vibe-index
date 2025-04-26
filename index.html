@@ -259,6 +259,21 @@ border-radius: 8px !important; /* 모서리 둥글게 */
   width: 100%;
   background-color: #000;
 }  
+
+.top-left-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1001;
+}
+
+.sticky-top-controls {
+  position: sticky;
+  top: 60px; /* About/Download 버튼 밑에 걸리도록 */
+  background-color: #000; /* 검정 배경 */
+  padding: 10px 0;
+  z-index: 999;
+}
   
 </style>
 </head>
@@ -268,11 +283,21 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 <button onclick="downloadPDF()" style="padding:6px 12px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">Download PDF</button>
 </div>
 <div class="container">
+  <div class="top-left-button">
+  <button onclick="toggleVibeInfo()" style="padding:6px 15px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">
+    About VIBE INDEX
+  </button>
+  </div>  
 <div class="logo-title">
   <img src="https://github.com/dookie777/vibe-index/blob/main/Logo_white.png?raw=true" alt="Logo" class="logo">
   <div class="title">YouTube VIBE Index Analyzer</div>
 </div>
 <div style="text-align:center; margin-bottom:20px;">
+
+<div style="text-align:center; padding: 20px; margin-top:30px;">
+
+  
+<div class="sticky-top-controls">
 <div class="tabs">
 <div class="tab active" onclick="switchTab('single')">Single Channel</div>
 <div class="tab" onclick="switchTab('compare')">Multi Channel</div>
@@ -288,11 +313,8 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 <label><input type="radio" name="mode-single" value="steady" checked> Steady VIBE</label>
 <label><input type="radio" name="mode-single" value="trendy"> Trendy VIBE</label>
 </div>
+</div>
 
-<div style="text-align:center; padding: 20px; margin-top:30px;">
-  <button onclick="toggleVibeInfo()" style="padding:6px 15px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">
-    About VIBE INDEX
-  </button>
 </div>
   
   
