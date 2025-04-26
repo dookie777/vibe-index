@@ -8,15 +8,8 @@
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js"></script>
 
 <style>
-body { 
-  background-color: #000000; 
-  color: #fff; 
-  font-family: Arial, sans-serif; 
-  margin: 0; 
-  padding: 0; 
-  overflow: hidden; /* ✅ 페이지 최우측 스크롤 없애기 */
-}.
-  container { padding: 20px; max-width: 1200px; margin: auto; }
+body { background-color: #000000; color: #fff; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+.container { padding: 20px; max-width: 1200px; margin: auto; }
 h1 { font-size: 2rem; text-align: center; color: #ffa500; }
 
 .tabs { display: flex; justify-content: center; margin-bottom: 20px; }
@@ -458,7 +451,7 @@ VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가
 </div>
 <script>
 
-const API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";
+const API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
@@ -819,7 +812,7 @@ return collectedComments; // 기존 댓글만 반환
 }
 }
 
-const NLP_API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";  // NLP용 API키 입력
+const NLP_API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";  // NLP용 API키 입력
 
 async function analyzeSentiment(comments) {
 const doc = comments.join(". ");
