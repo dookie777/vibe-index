@@ -61,6 +61,8 @@ align-items: center;
 gap: 20px;
 margin-top: 10px;
 font-size: 0.8rem;
+margin-bottom: 10px; /* 기존값: 25px ↓ 줄여야 함 */
+
 }
 .mode-selector label {
 font-weight: normal;
@@ -287,12 +289,12 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 .scroll-area {
   height: calc(100vh - 280px);
   overflow-y: auto;
-  padding-top: 20px;
+  padding-top: 0px;
   margin-top: 0px;  /* ✅ 이 줄 추가: 전체 결과 영역을 아래로 내림 */
 }
 
 #singleResult {
-  margin-top: 5px;  /* ✅ 이 줄 추가 */
+  margin-top: 60px;  /* ✅ 이 줄 추가 */
 }  
   
 .scroll-area::-webkit-scrollbar {
@@ -360,7 +362,7 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 
   <!-- ✅ 이 아래만 스크롤 되게 -->
 <div class="scroll-area">
-  <div style="height: 100px;"></div>   <!-- ✅ 인위적으로 위 공간 확보 -->
+    <div style="height: 0px;"></div>  <!-- ✅ 이 줄 추가: 스크롤 시작 위치 보정 -->
   <div id="singleResult"></div>
   <div id="videoTable"></div>
 </div>
@@ -479,7 +481,7 @@ VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가
 </div>
 <script>
 
-const API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";
+const API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
@@ -840,7 +842,7 @@ return collectedComments; // 기존 댓글만 반환
 }
 }
 
-const NLP_API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";  // NLP용 API키 입력
+const NLP_API_KEY = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";  // NLP용 API키 입력
 
 async function analyzeSentiment(comments) {
 const doc = comments.join(". ");
