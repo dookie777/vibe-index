@@ -511,8 +511,12 @@ return channelId;
 
 
 function getModeWeights() {
-const mode = document.querySelector('input[name="mode"]:checked').value;
-return mode === 'trendy' ? { e: 0.6, v: 0.3, u: 0.1 } : { e: 0.5, v: 0.4, u: 0.1 };
+  const modeInput = document.querySelector('input[name="mode"]:checked');
+  const mode = modeInput ? modeInput.value : 'steady'; // 기본 fallback
+
+  return mode === 'trendy'
+    ? { e: 0.6, v: 0.3, u: 0.1 }
+    : { e: 0.5, v: 0.4, u: 0.1 };
 }
 
 function renderCard(d, P, commentCount, analyzedVideoCount) {
@@ -675,8 +679,14 @@ result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
 
 // Steady VIBE 기본 선택 표시 (시각적으로도)
 window.onload = function () {
-  document.querySelector('#single input[name="mode"][value="steady"]').checked = true;
-  document.querySelector('#compare input[name="mode"][value="steady"]').checked = true;
+  // DOMContentLoaded로 정확한 시점 보장
+  document.addEventListener('DOMContentLoaded', () => {
+    const singleSteady = document.querySelector('#single input[name="mode"][value="steady"]');
+    const compareSteady = document.querySelector('#compare input[name="mode"][value="steady"]');
+
+    if (singleSteady) singleSteady.checked = true;
+    if (compareSteady) compareSteady.checked = true;
+  });
 };
 
 //
