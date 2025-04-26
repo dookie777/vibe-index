@@ -511,8 +511,11 @@ return channelId;
 
 
 function getModeWeights() {
-  const modeInput = document.querySelector('input[name="mode"]:checked');
-  const mode = modeInput ? modeInput.value : 'steady'; // 기본 fallback
+  // Single, Compare 둘 다 중 하나에서 선택된 것 찾기
+  const modeInput = document.querySelector('input[name="mode-single"]:checked') 
+                 || document.querySelector('input[name="mode-compare"]:checked');
+
+  const mode = modeInput ? modeInput.value : 'steady'; // 없으면 steady 기본
 
   return mode === 'trendy'
     ? { e: 0.6, v: 0.3, u: 0.1 }
