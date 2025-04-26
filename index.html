@@ -284,8 +284,8 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 </div>
 
 <div class="mode-selector">
-<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+<label><input type="radio" name="mode-single" value="steady" checked> Steady VIBE</label>
+<label><input type="radio" name="mode-single" value="trendy"> Trendy VIBE</label>
 </div>
 
 <div style="text-align:center; padding: 20px; margin-top:30px;">
@@ -310,8 +310,8 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 </div>
 
 <div class="mode-selector">
-<label><input type="radio" name="mode" value="steady" checked> Steady VIBE</label>
-<label><input type="radio" name="mode" value="trendy"> Trendy VIBE</label>
+<label><input type="radio" name="mode-compare" value="steady" checked> Steady VIBE</label>
+<label><input type="radio" name="mode-compare" value="trendy"> Trendy VIBE</label>
 </div>
 
 
@@ -416,18 +416,21 @@ const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
 function switchTab(tabName) {
-document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-document.getElementById(tabName).style.display = 'block';
-document.querySelectorAll('.tab').forEach(tab => {
-if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) tab.classList.add('active');
-});
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+  document.getElementById(tabName).style.display = 'block';
+  document.querySelectorAll('.tab').forEach(tab => {
+    if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) {
+      tab.classList.add('active');
+    }
+  });
 
- 
-// 멀티 탭에서도 Steady 기본 선택
-if (tabName === 'compare') {
-document.querySelector('#compare .mode-selector input[value="steady"]').checked = true;
-}
+  // ✅ 탭 전환할 때 Single/Compare 구역 각각에서 Steady 체크
+  if (tabName === 'single') {
+    document.querySelector('#single input[name="mode"][value="steady"]').checked = true;
+  } else if (tabName === 'compare') {
+    document.querySelector('#compare input[name="mode"][value="steady"]').checked = true;
+  }
 }
 
 function showError(msg) {
@@ -672,10 +675,7 @@ result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
 
 // Steady VIBE 기본 선택 표시 (시각적으로도)
 window.onload = function () {
-  // Single Channel 탭 기본 선택
   document.querySelector('#single input[name="mode"][value="steady"]').checked = true;
-
-  // Multi Channel 탭 기본 선택
   document.querySelector('#compare input[name="mode"][value="steady"]').checked = true;
 };
 
