@@ -56,13 +56,14 @@ font-weight: normal;
 }
 
 .result-card {
-background-color: #1e1e1e;
-border-radius: 12px;
-padding: 12px;
-box-shadow: 0 0 10px rgba(255,165,0,0.2);
-width: 360px;
-line-height: 1.3;
-text-align: left;
+  background-color: #1e1e1e;
+  border-radius: 0px; /* ✅ 사각형으로 변경 */
+  padding: 20px; /* ✅ 패딩을 20px로 넉넉하게 */
+  box-shadow: none; /* ✅ 그림자 제거 */
+  width: 360px;
+  margin: 30px auto 0 auto; /* ✅ 중앙 정렬 (auto) */
+  line-height: 1.4;
+  text-align: left;
 }
 
 .channel-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
