@@ -61,7 +61,7 @@ align-items: center;
 gap: 20px;
 margin-top: 10px;
 font-size: 0.8rem;
-margin-bottom: 10px; /* 기존값: 25px ↓ 줄여야 함 */
+margin-bottom: 5px; /* 기존값: 25px ↓ 줄여야 함 */
 
 }
 .mode-selector label {
@@ -74,13 +74,13 @@ font-weight: normal;
   padding: 20px 20px 20px 30px;
   box-shadow: none; /* ✅ 그림자 제거 */
   width: 360px;
-  margin: 30px auto 0 auto; /* ✅ 중앙 정렬 (auto) */
+  margin: 5px auto 0 auto; /* ✅ 중앙 정렬 (auto) */
   line-height: 1.4;
   text-align: left;
 }
 
 #compareResult .result-card {
-  margin: 20px 0 0 0; /* 멀티 결과 카드만 좌측정렬 */
+  margin: 0px 0 0 0; /* 멀티 결과 카드만 좌측정렬 */
 }
   
 .channel-info { display: flex; align-items: center; gap: 25px; margin-bottom: 15px; }
@@ -112,7 +112,7 @@ th { background-color: #333; color: #ffa500; }
 .error { color: red; text-align: center; margin-top: 10px; }
 
 #compareResult {
-  margin-top: 20px;
+  margin-top: 0px;
   padding: 10px;
   display: flex;
   flex-wrap: nowrap;
@@ -138,7 +138,7 @@ align-items: center;
 z-index: 1000;
 }
 .mode-selector {
-margin-bottom: 25px; /* 버튼과 결과 카드 간격 확보 */
+margin-bottom: 10px; /* 버튼과 결과 카드 간격 확보 */
 }
 
 #compareResult {
@@ -328,7 +328,9 @@ border-radius: 8px !important; /* 모서리 둥글게 */
   padding-bottom: 10px;
 }
 
-
+#compareResult .result-card {
+  margin-top: 0px; /* 멀티 결과 카드만 0px로 */
+}
   
 </style>
 </head>
@@ -483,7 +485,7 @@ VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가
 </div>
 <script>
 
-const API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";
+const API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";
 const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
@@ -491,12 +493,19 @@ function switchTab(tabName) {
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
 
+  const scrollArea = document.querySelector('.scroll-area');
+
   if (tabName === 'single') {
     document.getElementById('single').style.display = 'block';
     document.getElementById('singleResult').style.display = 'block';
     document.getElementById('videoTable').style.display = 'block';
     document.getElementById('compareResult').style.display = 'none';
     document.getElementById('compareResult').innerHTML = '';
+
+    // ✅ 싱글 채널은 scroll-area 원래대로 복구
+    scrollArea.style.height = 'calc(100vh - 360px)';
+    scrollArea.style.overflowY = 'auto';
+
   } else if (tabName === 'compare') {
     document.getElementById('compare').style.display = 'block';
     document.getElementById('singleResult').style.display = 'none';
@@ -504,22 +513,25 @@ function switchTab(tabName) {
     document.getElementById('videoTable').innerHTML = '';
     document.getElementById('compareResult').style.display = 'flex';
     document.getElementById('singleResult').innerHTML = '';
+
+    // ✅ 멀티 채널일 때만 scroll-area를 auto height로 풀고 overflow-y 없앰
+    scrollArea.style.height = 'auto';
+    scrollArea.style.overflowY = 'hidden';
   }
 
-  // ✅ 이거 무조건 switchTab 함수 안에 있어야 합니다
   document.querySelectorAll('.tab').forEach(tab => {
     if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) {
       tab.classList.add('active');
     }
   });
 
-  // ✅ 이 부분도 무조건 switchTab 함수 안에 있어야 함
   if (tabName === 'single') {
     document.querySelector('#single input[name="mode-single"][value="steady"]').checked = true;
   } else if (tabName === 'compare') {
     document.querySelector('#compare input[name="mode-compare"][value="steady"]').checked = true;
   }
 }
+
 
 
 // @handle → channel ID 변환
@@ -848,7 +860,7 @@ return collectedComments; // 기존 댓글만 반환
 }
 }
 
-const NLP_API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";  // NLP용 API키 입력
+const NLP_API_KEY = "AIzaSyC0WkWnLxz99SKvE45FdVJYwiHCf96I7Kk";  // NLP용 API키 입력
 
 async function analyzeSentiment(comments) {
 const doc = comments.join(". ");
