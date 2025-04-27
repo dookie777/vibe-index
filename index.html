@@ -299,14 +299,14 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 }
 
 .scroll-area {
-  height: calc(100vh - 280px);
+  height: calc(100vh - 360px);
   overflow-y: auto;
   padding-top: 0px;
   margin-top: 0px;  /* ✅ 이 줄 추가: 전체 결과 영역을 아래로 내림 */
 }
 
 #singleResult {
-  margin-top: 60px;  /* ✅ 이 줄 추가 */
+  margin-top: 5px;  /* ✅ 이 줄 추가 */
 }  
   
 .scroll-area::-webkit-scrollbar {
@@ -389,24 +389,13 @@ border-radius: 8px !important; /* 모서리 둥글게 */
 
   <!-- ✅ 이 아래만 스크롤 되게 -->
 <div class="scroll-area">
-    <div style="height: 0px;"></div>  <!-- ✅ 이 줄 추가: 스크롤 시작 위치 보정 -->
+  <div style="height: 0px;"></div>  <!-- ✅ 이 줄 추가: 스크롤 시작 위치 보정 -->
   <div id="singleResult"></div>
   <div id="videoTable"></div>
-</div>
-
-
-
-
-<div style="text-align:center; padding: 20px; margin-top:30px;">
-<button onclick="toggleVibeInfo()" style="padding:6px 15px; background-color:#333333; color:#FFFFFF; border-radius:8px; font-size:0.8rem;">
-About VIBE INDEX
-</button>
-  
-<div id="compareResult"></div>
+  <div id="compareResult"></div> <!-- 멀티 카드도 여기에! -->
 </div>
  
 <div class="error" id="errorMsg"></div>
-</div>
 </div>
 
 
@@ -708,7 +697,6 @@ document.getElementById('singleResult').innerHTML = renderCard(d, P, commentCoun
 const videoTableHTML = renderVideoTable(d.videos);
 document.getElementById('videoTable').innerHTML = videoTableHTML;
 
-document.getElementById('videoTable').scrollIntoView({ behavior: 'smooth' });
 }
 
 
