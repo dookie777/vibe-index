@@ -483,39 +483,43 @@ VIBE INDEX = (E정규화 × 가중치E) + (V정규화 × 가중치V) + (U × 가
 </div>
 <script>
 
-const API_KEY = "AIzaSyB0XJ0a5lFg7foBkMCkGij0xnWM6smbbVI";
+const API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";
 const url = "AIzaSyCR0CZsIG0Ucl1Jk6HDXD44peoQITtDnSM";
 //const value = data?.[0]?.property;
 
 function switchTab(tabName) {
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-  document.getElementById(tabName).style.display = 'block';
+
+  if (tabName === 'single') {
+    document.getElementById('single').style.display = 'block';
+    document.getElementById('singleResult').style.display = 'block';
+    document.getElementById('videoTable').style.display = 'block';
+    document.getElementById('compareResult').style.display = 'none';
+    document.getElementById('compareResult').innerHTML = '';
+  } else if (tabName === 'compare') {
+    document.getElementById('compare').style.display = 'block';
+    document.getElementById('singleResult').style.display = 'none';
+    document.getElementById('videoTable').style.display = 'none';
+    document.getElementById('videoTable').innerHTML = '';
+    document.getElementById('compareResult').style.display = 'flex';
+    document.getElementById('singleResult').innerHTML = '';
+  }
+
+  // ✅ 이거 무조건 switchTab 함수 안에 있어야 합니다
   document.querySelectorAll('.tab').forEach(tab => {
     if (tab.textContent.includes(tabName === 'single' ? 'Single' : 'Multi')) {
       tab.classList.add('active');
     }
   });
 
-  // ✅ 탭 전환할 때 Single/Compare 구역 각각에서 Steady 체크
+  // ✅ 이 부분도 무조건 switchTab 함수 안에 있어야 함
   if (tabName === 'single') {
-    document.querySelector('#single input[name="mode"][value="steady"]').checked = true;
+    document.querySelector('#single input[name="mode-single"][value="steady"]').checked = true;
   } else if (tabName === 'compare') {
-    document.querySelector('#compare input[name="mode"][value="steady"]').checked = true;
+    document.querySelector('#compare input[name="mode-compare"][value="steady"]').checked = true;
   }
 }
-
-function showError(msg) {
-document.getElementById('errorMsg').textContent = msg;
-}
-
-// function extractChannelId(url) {
-//  const match = url.match(/(?:channel\/|\?id=|@)([\w-]+)/);
-//  return match ? match[1] : null;
-// } 
-
-
-// 4.10추가 시작
 
 
 // @handle → channel ID 변환
@@ -701,54 +705,55 @@ document.getElementById('videoTable').innerHTML = videoTableHTML;
 
 
 async function compareChannels() {
-const urls = [
-document.getElementById('channelUrl1').value,
-document.getElementById('channelUrl2').value,
-document.getElementById('channelUrl3').value
-].filter(Boolean);
+  const urls = [
+    document.getElementById('channelUrl1').value,
+    document.getElementById('channelUrl2').value,
+    document.getElementById('channelUrl3').value
+  ].filter(Boolean);
 
-const result = document.getElementById('compareResult');
-result.innerHTML = '';
+  const result = document.getElementById('compareResult');
+  result.innerHTML = ''; // ✅ 매번 초기화
 
-for (const url of urls) {
-const id = await extractChannelId(url);
-if (!id) {
-showError(`채널 ID를 찾을 수 없습니다: ${url}`);
-continue;
+  for (const url of urls) {
+    const id = await extractChannelId(url);
+    if (!id) {
+      showError(`채널 ID를 찾을 수 없습니다: ${url}`);
+      continue;
+    }
+
+    const d = await fetchChannelData(id);
+
+    let P = null;
+    let commentCount = 0;
+    let analyzedVideoCount = 0;
+
+    const recentVideos = await fetchRecentVideos(id, 50);
+
+    let comments = [];
+    analyzedVideoCount = 0;
+
+    for (let videoId of recentVideos) {
+      if (comments.length >= 100) break;
+
+      const prevCommentCount = comments.length;
+      comments = await fetchComments(videoId, comments, 100 - comments.length);
+
+      if (comments.length > prevCommentCount) analyzedVideoCount++;
+    }
+
+    commentCount = comments.length;
+
+    if (commentCount > 0) {
+      P = await analyzeSentiment(comments);
+    } else {
+      P = 0;
+    }
+
+    // ✅ 여기서는 videoTable 안 만듦 (절대 금지)
+    result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
+  }
 }
 
-const d = await fetchChannelData(id);
-
-let P = null;
-let commentCount = 0;
-let analyzedVideoCount = 0;
-
-const recentVideos = await fetchRecentVideos(id, 50);
-
-let comments = [];
-analyzedVideoCount = 0;
-
-for (let videoId of recentVideos) {
-if (comments.length >= 100) break;
-
-const prevCommentCount = comments.length;
-comments = await fetchComments(videoId, comments, 100 - comments.length);
-
-if (comments.length > prevCommentCount) analyzedVideoCount++;
-}
-
-commentCount = comments.length;
-
-if (commentCount > 0) {
-P = await analyzeSentiment(comments);
-} else {
-P = 0;  // 🔴 명확히 0점으로 처리 (비공개일 때)
-}
-
-
-result.innerHTML += renderCard(d, P, commentCount, analyzedVideoCount);
-}
-}
 
 // Steady VIBE 기본 선택 표시 (시각적으로도)
 window.onload = function () {
@@ -843,7 +848,7 @@ return collectedComments; // 기존 댓글만 반환
 }
 }
 
-const NLP_API_KEY = "AIzaSyB0XJ0a5lFg7foBkMCkGij0xnWM6smbbVI";  // NLP용 API키 입력
+const NLP_API_KEY = "AIzaSyARpLWZ_wy6n0jXw8LNCLCWlE-SNHI0hmI";  // NLP용 API키 입력
 
 async function analyzeSentiment(comments) {
 const doc = comments.join(". ");
